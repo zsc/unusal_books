@@ -28,10 +28,54 @@ prompt = "在迷雾笼罩的城市里，侦探发现了"
 # 可能输出："会说话的猫"、"时间裂缝"、"自己的墓碑"
 ```
 
+**深入理解温度参数的数学本质**：
+
+温度参数T直接影响softmax函数的概率分布：
+```
+P(token_i) = exp(logit_i/T) / Σ exp(logit_j/T)
+```
+
+- T → 0：分布变得尖锐，最高概率token几乎总被选中
+- T = 1：原始概率分布
+- T → ∞：分布变得平坦，所有token概率趋同
+
+**采样策略对叙事的影响**：
+
+```python
+# Top-k采样：限制候选token数量
+def top_k_sampling(logits, k=50):
+    """只从概率最高的k个token中采样"""
+    # 适合：需要连贯性的主线情节
+    # 风险：可能错过创意选项
+    
+# Top-p (nucleus)采样：动态候选集
+def nucleus_sampling(logits, p=0.95):
+    """选择累积概率达到p的最小token集"""
+    # 适合：平衡创意与连贯性
+    # 优势：自适应不同上下文的确定性
+    
+# 混合策略示例
+def adaptive_sampling(context, logits):
+    if context.is_dialogue:
+        return nucleus_sampling(logits, p=0.9)
+    elif context.is_action:
+        return top_k_sampling(logits, k=30)
+    elif context.is_description:
+        return temperature_sampling(logits, T=1.1)
+```
+
+**涌现能力的层次**：
+
+1. **语法涌现**（~1B参数）：基本的语法正确性
+2. **语义涌现**（~10B参数）：概念理解和关联
+3. **逻辑涌现**（~100B参数）：因果推理和情节连贯性
+4. **创造涌现**（~1T参数）：新颖概念组合和隐喻生成
+
 关键洞察：
 - **概率分布塑造叙事风格**：调整采样参数可以在"安全但无聊"和"有趣但混乱"之间找到平衡
 - **上下文是一切**：模型通过上下文理解角色、场景和叙事逻辑
 - **涌现不等于理解**：AI可以生成连贯的情节，但并不"理解"故事的意义
+- **规模定律的叙事含义**：更大的模型不仅是"更好"，而是解锁了质的飞跃
 
 #### 上下文窗口与长程依赖
 
@@ -55,6 +99,133 @@ prompt = "在迷雾笼罩的城市里，侦探发现了"
     - 环境细节
 ```
 
+**注意力机制的叙事特性**：
+
+```python
+class NarrativeAttentionPatterns:
+    """叙事中的注意力模式分析"""
+    
+    def analyze_attention_decay(self, distance):
+        """注意力随距离衰减的模式"""
+        # 研究发现：叙事元素的注意力衰减遵循特定模式
+        
+        if distance < 100:  # 近期上下文
+            return 1.0  # 完全注意力
+        elif distance < 1000:  # 中期记忆
+            return 0.8 * math.exp(-distance/500)  # 指数衰减
+        else:  # 长期记忆
+            return 0.2 * (1000/distance)  # 幂律衰减
+    
+    def critical_memory_points(self):
+        """识别必须保留的叙事锚点"""
+        return {
+            "character_introduction": 0.95,  # 角色首次出现
+            "plot_twist": 0.90,             # 情节转折点
+            "worldbuilding_rule": 0.85,     # 世界设定规则
+            "unresolved_conflict": 0.80,    # 未解决的冲突
+            "foreshadowing": 0.75           # 伏笔元素
+        }
+```
+
+**长文本的分块策略**：
+
+```python
+def chunk_narrative_intelligently(text, max_chunk_size=2000):
+    """智能分割长篇叙事，保持语义完整性"""
+    
+    chunks = []
+    current_chunk = []
+    current_size = 0
+    
+    # 场景边界检测
+    scene_markers = [
+        "\n\n",           # 段落分隔
+        "* * *",          # 场景分隔符
+        "第.*章",         # 章节标记
+        "与此同时",       # 时空转换
+        "多年后",         # 时间跳跃
+    ]
+    
+    # 保持对话完整性
+    in_dialogue = False
+    dialogue_speaker = None
+    
+    for paragraph in text.split('\n\n'):
+        # 检测对话状态
+        if '"' in paragraph or '"' in paragraph:
+            in_dialogue = True
+            # 提取说话人
+            speaker = extract_speaker(paragraph)
+            if speaker != dialogue_speaker:
+                # 说话人变化，可以分割
+                if current_size > max_chunk_size * 0.8:
+                    chunks.append(merge_chunk(current_chunk))
+                    current_chunk = []
+                    current_size = 0
+        
+        current_chunk.append(paragraph)
+        current_size += len(paragraph)
+        
+        # 智能分割决策
+        if should_split(current_size, max_chunk_size, paragraph, scene_markers):
+            chunks.append(merge_chunk(current_chunk))
+            current_chunk = []
+            current_size = 0
+    
+    return chunks
+```
+
+**记忆压缩与检索增强生成(RAG)**：
+
+```python
+class NarrativeMemoryBank:
+    """叙事记忆库，支持压缩存储和语义检索"""
+    
+    def __init__(self):
+        self.memories = {}
+        self.embeddings = {}
+        self.compression_ratio = 0.3
+    
+    def store_narrative_event(self, event, importance_score):
+        """存储叙事事件，根据重要性决定压缩程度"""
+        
+        if importance_score > 0.8:
+            # 高重要性：完整保存
+            compressed = event
+            self.memories[event.id] = {
+                'full_text': event.text,
+                'summary': None,
+                'importance': importance_score,
+                'timestamp': event.timestamp
+            }
+        else:
+            # 低重要性：压缩存储
+            summary = self.compress_event(event)
+            self.memories[event.id] = {
+                'full_text': None,
+                'summary': summary,
+                'importance': importance_score,
+                'timestamp': event.timestamp
+            }
+        
+        # 计算并存储语义嵌入
+        self.embeddings[event.id] = self.compute_embedding(event)
+    
+    def retrieve_relevant_context(self, query, top_k=5):
+        """基于语义相似度检索相关记忆"""
+        query_embedding = self.compute_embedding(query)
+        
+        similarities = []
+        for memory_id, memory_embedding in self.embeddings.items():
+            similarity = cosine_similarity(query_embedding, memory_embedding)
+            similarities.append((memory_id, similarity))
+        
+        # 返回最相关的记忆
+        top_memories = sorted(similarities, key=lambda x: x[1], reverse=True)[:top_k]
+        
+        return [self.expand_memory(memory_id) for memory_id, _ in top_memories]
+```
+
 #### 温度参数与创造性控制
 
 温度不仅影响随机性，更是叙事节奏的调节器：
@@ -70,6 +241,154 @@ def adaptive_temperature(narrative_context):
         return 1.1  # 描述可以更有诗意
     elif narrative_context.is_plot_critical:
         return 0.5  # 关键情节点需要精确控制
+```
+
+**高级温度控制策略**：
+
+```python
+class AdvancedTemperatureController:
+    """基于多维度因素的温度控制系统"""
+    
+    def __init__(self):
+        self.base_temp = 0.8
+        self.history_window = 100  # 考虑最近100个生成
+        self.repetition_penalty = 0.1
+        
+    def calculate_dynamic_temperature(self, context):
+        """多因素动态温度计算"""
+        
+        # 基础温度
+        temp = self.base_temp
+        
+        # 1. 重复度惩罚
+        repetition_score = self.measure_repetition(context.recent_outputs)
+        temp += repetition_score * self.repetition_penalty
+        
+        # 2. 情绪强度调整
+        emotional_intensity = context.current_emotion_level
+        if emotional_intensity > 0.7:
+            temp += 0.2  # 高情绪时增加变化性
+        
+        # 3. 叙事张力曲线
+        tension_level = context.narrative_tension
+        temp_adjustment = self.tension_to_temp_curve(tension_level)
+        temp *= temp_adjustment
+        
+        # 4. 读者参与度响应
+        if context.reader_engagement < 0.5:
+            temp += 0.15  # 低参与度时增加惊喜元素
+        
+        # 5. 类型特定调整
+        genre_modifier = {
+            'mystery': 0.8,      # 推理需要逻辑
+            'poetry': 1.3,       # 诗歌需要创意
+            'technical': 0.6,    # 技术文档需要准确
+            'surreal': 1.5       # 超现实可以疯狂
+        }.get(context.genre, 1.0)
+        
+        return max(0.1, min(2.0, temp * genre_modifier))
+    
+    def tension_to_temp_curve(self, tension):
+        """叙事张力到温度的映射曲线"""
+        # 使用S型曲线，在高潮时稍微降低温度保证连贯性
+        import math
+        return 1.2 - 0.4 / (1 + math.exp(-10 * (tension - 0.7)))
+```
+
+**创造性与连贯性的平衡艺术**：
+
+```python
+class CreativityCoherenceBalancer:
+    """平衡创造性和连贯性的高级系统"""
+    
+    def __init__(self):
+        self.coherence_tracker = CoherenceTracker()
+        self.creativity_evaluator = CreativityEvaluator()
+        
+    def generate_with_balance(self, prompt, target_creativity=0.7):
+        """生成满足创造性目标的连贯文本"""
+        
+        candidates = []
+        temps = [0.5, 0.7, 0.9, 1.1, 1.3]
+        
+        for temp in temps:
+            # 生成候选
+            output = self.generate(prompt, temperature=temp)
+            
+            # 评估指标
+            coherence = self.coherence_tracker.score(output, prompt)
+            creativity = self.creativity_evaluator.score(output)
+            
+            # 计算综合分数
+            balance_score = self.calculate_balance_score(
+                coherence, creativity, target_creativity
+            )
+            
+            candidates.append({
+                'text': output,
+                'temp': temp,
+                'coherence': coherence,
+                'creativity': creativity,
+                'balance': balance_score
+            })
+        
+        # 选择最佳候选
+        best = max(candidates, key=lambda x: x['balance'])
+        
+        # 学习最佳温度模式
+        self.learn_optimal_pattern(prompt, best)
+        
+        return best['text']
+    
+    def calculate_balance_score(self, coherence, creativity, target_creativity):
+        """计算平衡分数，考虑目标创造性水平"""
+        
+        # 连贯性是基础要求（最低0.6）
+        if coherence < 0.6:
+            return coherence * 0.5
+        
+        # 创造性接近目标值时得分最高
+        creativity_distance = abs(creativity - target_creativity)
+        creativity_score = 1 - creativity_distance
+        
+        # 综合评分
+        return coherence * 0.4 + creativity_score * 0.6
+```
+
+**温度调度器：长篇叙事的节奏控制**：
+
+```python
+class NarrativeTemperatureScheduler:
+    """根据故事进展调度温度参数"""
+    
+    def __init__(self, story_structure):
+        self.structure = story_structure
+        self.current_position = 0
+        
+    def get_scheduled_temperature(self):
+        """根据三幕结构返回建议温度"""
+        
+        position_ratio = self.current_position / self.structure.total_length
+        
+        if position_ratio < 0.25:  # 第一幕：建立
+            # 开篇需要吸引力，但不能太疯狂
+            return 0.8 + 0.1 * math.sin(position_ratio * 4 * math.pi)
+            
+        elif position_ratio < 0.5:  # 第二幕前半：发展
+            # 逐渐增加复杂性和意外
+            return 0.85 + 0.15 * (position_ratio - 0.25) * 4
+            
+        elif position_ratio < 0.75:  # 第二幕后半：冲突
+            # 高潮前的紧张积累
+            return 1.0 - 0.2 * math.cos((position_ratio - 0.5) * 4 * math.pi)
+            
+        elif position_ratio < 0.9:  # 第三幕：高潮
+            # 关键时刻需要控制
+            return 0.7
+            
+        else:  # 结尾
+            # 收束时降低随机性
+            return 0.6 - 0.1 * (position_ratio - 0.9) * 10
 ```
 
 ### 6.1.2 提示设计模式
@@ -141,6 +460,136 @@ world_rules = {
 "他打开门，看到..."
 ```
 
+**高级少样本学习技巧**：
+
+```python
+class AdvancedFewShotLearning:
+    """用于叙事风格学习的高级少样本系统"""
+    
+    def extract_style_features(self, examples):
+        """从示例中提取风格特征"""
+        features = {
+            'vocabulary': self.analyze_word_choice(examples),
+            'sentence_structure': self.analyze_syntax(examples),
+            'imagery_patterns': self.extract_metaphors(examples),
+            'emotional_tone': self.measure_sentiment(examples),
+            'rhythm': self.analyze_prosody(examples)
+        }
+        return features
+    
+    def generate_style_prompt(self, style_name, examples, task):
+        """生成包含风格指导的提示"""
+        
+        # 提取风格DNA
+        style_dna = self.extract_style_features(examples)
+        
+        prompt = f"""
+        ## 风格指南：{style_name}
+        
+        词汇特征：{style_dna['vocabulary']['key_words']}
+        句式偏好：{style_dna['sentence_structure']['patterns']}
+        意象类型：{style_dna['imagery_patterns']['dominant_themes']}
+        情感基调：{style_dna['emotional_tone']['spectrum']}
+        节奏模式：{style_dna['rhythm']['cadence']}
+        
+        ## 示例展示
+        {self.format_examples(examples)}
+        
+        ## 任务
+        {task}
+        
+        请严格遵循以上风格特征...
+        """
+        
+        return prompt
+```
+
+**对比学习增强风格区分**：
+
+```python
+def contrastive_style_learning(target_style, contrast_styles):
+    """通过对比学习强化风格特征"""
+    
+    prompt = f"""
+    ## 目标风格：{target_style['name']}
+    
+    ### 正例（应该这样写）：
+    {format_examples(target_style['examples'])}
+    
+    ### 反例（避免这样写）：
+    """
+    
+    for style in contrast_styles:
+        prompt += f"""
+    
+    ❌ {style['name']}风格：
+    {style['example']}
+    原因：{style['why_different']}
+    """
+    
+    prompt += """
+    
+    ### 风格检查清单：
+    ✓ 是否使用了目标风格的核心意象？
+    ✓ 句式节奏是否匹配？
+    ✓ 情感色彩是否一致？
+    ✗ 是否误用了其他风格的特征？
+    
+    现在请用目标风格写作...
+    """
+    
+    return prompt
+```
+
+**渐进式风格迁移**：
+
+```python
+class ProgressiveStyleTransfer:
+    """逐步引导AI掌握复杂风格"""
+    
+    def __init__(self):
+        self.difficulty_levels = ['basic', 'intermediate', 'advanced', 'master']
+        
+    def create_learning_sequence(self, target_style):
+        """创建渐进学习序列"""
+        
+        sequence = []
+        
+        # Level 1: 基础词汇和句式
+        sequence.append({
+            'level': 'basic',
+            'focus': '模仿基本词汇选择和句子长度',
+            'examples': self.filter_simple_examples(target_style),
+            'task': '写一个简单描述'
+        })
+        
+        # Level 2: 修辞手法
+        sequence.append({
+            'level': 'intermediate', 
+            'focus': '学习比喻和意象运用',
+            'examples': self.filter_metaphor_rich_examples(target_style),
+            'task': '创作包含核心意象的段落'
+        })
+        
+        # Level 3: 情感层次
+        sequence.append({
+            'level': 'advanced',
+            'focus': '掌握情感转折和层次',
+            'examples': self.filter_emotional_complexity_examples(target_style),
+            'task': '写一个情感渐变的场景'
+        })
+        
+        # Level 4: 完整融合
+        sequence.append({
+            'level': 'master',
+            'focus': '自如运用所有风格元素',
+            'examples': self.select_best_examples(target_style),
+            'task': '创作展现风格精髓的完整片段'
+        })
+        
+        return sequence
+```
+
 #### 链式思考构建复杂情节
 
 链式思考（Chain-of-Thought）不仅用于推理，也是构建多层次情节的利器：
@@ -167,6 +616,175 @@ world_rules = {
    → "老地方"可能已经改变，或者写信人并非他想象的人
 
 **生成下一段**：基于以上推理...
+```
+
+**多维度链式推理系统**：
+
+```python
+class MultidimensionalChainOfThought:
+    """多维度链式思考系统，构建立体情节"""
+    
+    def __init__(self):
+        self.dimensions = {
+            'plot': PlotChain(),           # 情节逻辑链
+            'character': CharacterChain(),   # 角色心理链
+            'world': WorldChain(),          # 世界规则链
+            'theme': ThemeChain(),          # 主题深化链
+            'reader': ReaderChain()         # 读者体验链
+        }
+    
+    def generate_complex_development(self, current_state):
+        """生成多维度协调的情节发展"""
+        
+        # 1. 各维度独立推理
+        chains = {}
+        for dim_name, dim_chain in self.dimensions.items():
+            chains[dim_name] = dim_chain.reason(current_state)
+        
+        # 2. 检测冲突和协同
+        conflicts = self.detect_conflicts(chains)
+        synergies = self.find_synergies(chains)
+        
+        # 3. 解决冲突，强化协同
+        resolved_chains = self.resolve_and_enhance(chains, conflicts, synergies)
+        
+        # 4. 生成综合推理路径
+        return self.synthesize_chains(resolved_chains)
+    
+    def detect_conflicts(self, chains):
+        """检测不同维度间的逻辑冲突"""
+        conflicts = []
+        
+        # 示例：角色动机vs世界规则
+        if chains['character']['action'] == 'use_magic' and \
+           chains['world']['magic_availability'] == 'forbidden':
+            conflicts.append({
+                'type': 'character_world_conflict',
+                'description': '角色想使用被禁止的魔法',
+                'severity': 'high',
+                'resolution_options': [
+                    '角色违反规则（推动冲突）',
+                    '角色寻找替代方案（展示智慧）',
+                    '揭示规则的例外（世界观深化）'
+                ]
+            })
+        
+        return conflicts
+```
+
+**情节分支的概率树**：
+
+```python
+class PlotProbabilityTree:
+    """基于概率的情节分支生成器"""
+    
+    def __init__(self, story_context):
+        self.context = story_context
+        self.tree = {}
+        
+    def generate_branches(self, decision_point, depth=3):
+        """生成决策点的概率分支树"""
+        
+        if depth == 0:
+            return None
+            
+        branches = []
+        
+        # 生成可能的选择
+        choices = self.generate_plausible_choices(decision_point)
+        
+        for choice in choices:
+            # 计算选择的合理性概率
+            probability = self.calculate_choice_probability(choice)
+            
+            # 推演选择的后果
+            consequences = self.simulate_consequences(choice)
+            
+            # 递归生成子分支
+            sub_branches = self.generate_branches(consequences, depth-1)
+            
+            branches.append({
+                'choice': choice,
+                'probability': probability,
+                'consequences': consequences,
+                'sub_branches': sub_branches,
+                'narrative_value': self.evaluate_narrative_value(choice, consequences)
+            })
+        
+        return branches
+    
+    def calculate_choice_probability(self, choice):
+        """基于角色性格、情境压力等计算选择概率"""
+        
+        factors = {
+            'character_alignment': self.character_choice_fit(choice),
+            'situational_pressure': self.context_pressure_factor(choice),
+            'narrative_momentum': self.story_flow_factor(choice),
+            'reader_expectation': self.expectation_subversion_value(choice)
+        }
+        
+        # 加权计算综合概率
+        weights = {'character': 0.4, 'situation': 0.3, 'narrative': 0.2, 'reader': 0.1}
+        
+        return sum(factors[k] * weights[k.split('_')[0]] for k in factors)
+```
+
+**深度情节推理模板**：
+
+```python
+def deep_plot_reasoning_template(situation):
+    """深度情节推理的结构化模板"""
+    
+    template = f"""
+    ## 情境分析
+    
+    ### 表层情况
+    {situation['surface_description']}
+    
+    ### 深层含义
+    - 象征层面：{analyze_symbolism(situation)}
+    - 心理层面：{analyze_psychology(situation)}
+    - 社会层面：{analyze_social_context(situation)}
+    
+    ## 因果推演
+    
+    ### 直接原因
+    {trace_immediate_causes(situation)}
+    
+    ### 根本原因
+    {trace_root_causes(situation)}
+    
+    ### 潜在后果
+    - 短期（下一场景）：{predict_short_term(situation)}
+    - 中期（本章结束）：{predict_medium_term(situation)}
+    - 长期（故事主线）：{predict_long_term(situation)}
+    
+    ## 叙事机会
+    
+    ### 角色发展
+    - 可以展现的性格特质：{character_development_opportunities(situation)}
+    - 关系动态的变化：{relationship_dynamics(situation)}
+    
+    ### 主题深化
+    - 可以探讨的主题：{thematic_opportunities(situation)}
+    - 与核心主题的联系：{connect_to_central_theme(situation)}
+    
+    ### 读者参与
+    - 悬念设置点：{suspense_points(situation)}
+    - 情感共鸣点：{emotional_resonance_points(situation)}
+    
+    ## 最优路径推荐
+    
+    基于以上分析，推荐的情节发展是：
+    {recommend_optimal_path(situation)}
+    
+    理由：
+    1. {reason_1}
+    2. {reason_2}
+    3. {reason_3}
+    """
+    
+    return template
 ```
 
 ### 6.1.3 交互式提示系统
