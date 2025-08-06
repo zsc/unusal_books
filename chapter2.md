@@ -20,17 +20,29 @@
 
 ### 2.1.1 树状结构（Tree Structure）
 
-树状结构是最直观的非线性形式。从一个根节点开始，故事在关键决策点分叉，形成不同的叙事分支。
+树状结构是最直观的非线性形式。从一个根节点开始，故事在关键决策点分叉，形成不同的叙事分支。这种结构模拟了现实生活中的决策过程——每个选择都会关闭某些可能性，同时开启新的道路。
 
 #### 特征
 - **单向性**：一旦选择了某个分支，通常无法回到之前的节点
 - **指数增长**：分支数量随深度呈指数增长
 - **明确的因果链**：每个结局都可以追溯到特定的选择序列
+- **认知负担递增**：创作者需要维护的内容量呈几何级数增长
 
 #### 设计原则
 1. **有意义的选择**：每个分支点都应该代表真正影响故事走向的决定
+   - 道德困境：拯救一个人还是多数人
+   - 策略选择：潜行、外交还是正面对抗
+   - 关系决定：信任、背叛或保持中立
+
 2. **分支收敛**：适当合并相似路径，避免内容爆炸
+   - **钻石结构**：分开后重新汇合
+   - **瓶颈设计**：所有路径必经的关键情节
+   - **主题变奏**：相同事件的不同视角呈现
+
 3. **深度控制**：限制最大深度，保持可管理性
+   - 建议最大深度：5-7层
+   - 每层分支数：2-4个
+   - 总结局数：8-16个
 
 ```
           [开始]
@@ -42,79 +54,546 @@
   [结局1][结局2][结局3][结局4]
 ```
 
+#### 高级树状结构模式
+
+1. **延迟分支（Delayed Branching）**
+```
+[开始] --> [共同剧情] --> [第一个选择]
+                              /  |  \
+                           [路径1][路径2][路径3]
+                              \  |  /
+                          [汇合点] --> [第二个选择]
+```
+
+2. **条件分支（Conditional Branching）**
+```
+[场景X]
+   |
+[检查条件：是否拥有钥匙？]
+   |                    |
+[有钥匙：开门]    [无钥匙：寻找另一条路]
+```
+
+3. **加权分支（Weighted Branching）**
+基于之前选择的累积影响：
+```python
+def calculate_branch_availability(player_history):
+    karma = sum(choice.karma_value for choice in player_history)
+    if karma > 50:
+        return ["善良结局", "中立结局"]
+    elif karma < -50:
+        return ["邪恶结局", "中立结局"]
+    else:
+        return ["中立结局", "隐藏结局"]
+```
+
+#### 实际应用案例
+
+**《直到黎明》(Until Dawn)**
+- 蝴蝶效应系统：每个选择都可能影响角色生死
+- 关系网络：角色间的好感度影响可用选项
+- 多重结局：基于玩家选择的组合
+
+**《奇异人生》(Life is Strange)**
+- 二元选择：每集都有重大道德选择
+- 时间回溯：允许玩家"反悔"但保留记忆
+- 长期后果：早期选择在后期产生意想不到的影响
+
 ### 2.1.2 网状结构（Network Structure）
 
-网状结构允许节点之间有多重连接，创造更复杂的叙事可能性。
+网状结构允许节点之间有多重连接，创造更复杂的叙事可能性。与树状结构的单向性不同，网状结构允许故事在不同节点间自由流动，形成更接近人类记忆和联想的叙事模式。
 
 #### 特征
 - **多路径性**：同一个节点可以通过不同路径到达
 - **交叉引用**：不同故事线可以相互影响
 - **非线性时间**：可以实现时间跳跃和并行叙事
+- **涌现性叙事**：玩家路径的组合创造独特体验
+- **高重玩价值**：每次游玩都可能发现新内容
 
 #### 设计原则
 1. **节点独立性**：每个节点应该在不同上下文中都有意义
+   - 模块化内容：每个场景自成体系
+   - 上下文适应：根据进入路径调整细节
+   - 信息完整性：避免依赖特定前序节点
+
 2. **连接逻辑**：明确定义节点间转换的条件
+   - **主题连接**：相似主题的内容相连
+   - **时空连接**：基于地理或时间关系
+   - **因果连接**：事件的前因后果
+   - **情感连接**：情绪状态的转换
+
 3. **避免迷宫**：提供导航线索，防止读者迷失
+   - 进度追踪系统
+   - 内容地图或索引
+   - 智能推荐下一个节点
+   - 允许标记和笔记
+
+#### 网状结构的实现模式
+
+1. **中心辐射型（Hub and Spoke）**
+```
+        [节点B]
+           |
+[节点A]--[中心]--[节点C]
+           |
+        [节点D]
+```
+适用场景：基地探索、调查类叙事
+
+2. **全连接型（Fully Connected）**
+```
+[A]---[B]
+ |  X  |
+ | / \ |
+[C]---[D]
+```
+适用场景：短篇实验作品、概念验证
+
+3. **小世界网络（Small World Network）**
+```
+[群组1]     [群组2]
+  A--B        E--F
+  |  |   <->  |  |
+  C--D        G--H
+```
+特点：群组内紧密连接，群组间稀疏连接
+
+#### 技术实现考虑
+
+```javascript
+class NarrativeNode {
+  constructor(id, content) {
+    this.id = id;
+    this.content = content;
+    this.connections = new Map(); // 目标节点ID -> 连接条件
+    this.visitCount = 0;
+    this.metadata = {};
+  }
+  
+  addConnection(targetId, condition = null) {
+    this.connections.set(targetId, {
+      condition,
+      weight: 1.0, // 用于推荐算法
+      type: 'default' // 主线、支线、隐藏等
+    });
+  }
+  
+  getAvailableConnections(playerState) {
+    return Array.from(this.connections.entries())
+      .filter(([_, conn]) => 
+        !conn.condition || conn.condition(playerState))
+      .map(([targetId, _]) => targetId);
+  }
+}
+
+class NetworkNarrative {
+  constructor() {
+    this.nodes = new Map();
+    this.currentNode = null;
+    this.visitedNodes = new Set();
+    this.playerState = {};
+  }
+  
+  navigateTo(nodeId) {
+    if (!this.nodes.has(nodeId)) {
+      throw new Error(`Node ${nodeId} not found`);
+    }
+    
+    this.currentNode = this.nodes.get(nodeId);
+    this.visitedNodes.add(nodeId);
+    this.currentNode.visitCount++;
+    
+    // 动态调整内容
+    return this.adaptContent(this.currentNode);
+  }
+  
+  adaptContent(node) {
+    // 根据访问历史和玩家状态调整内容
+    let content = node.content;
+    
+    if (node.visitCount > 1) {
+      content = this.addRevisitVariation(content);
+    }
+    
+    if (this.playerState.knowledge) {
+      content = this.addContextualDetails(content);
+    }
+    
+    return content;
+  }
+}
+```
+
+#### 实际应用案例
+
+**《她的故事》(Her Story)**
+- 通过搜索关键词访问视频片段
+- 片段之间通过共同主题词连接
+- 玩家创造自己的调查路径
+- 真相通过碎片拼接浮现
+
+**《十三机兵防卫圈》(13 Sentinels)**
+- 13个角色的故事相互交织
+- 可以在不同时间线和角色间切换
+- 某些剧情需要其他角色的信息解锁
+- 最终形成完整的叙事拼图
+
+**《极乐迪斯科》(Disco Elysium)**
+- 思维宫殿系统：内在对话形成网络
+- 技能检定开启新的对话选项
+- 世界观通过探索逐步展开
+- 失败也能推进叙事
 
 ### 2.1.3 循环结构（Loop Structure）
 
-循环结构允许读者返回之前的状态，创造迭代和递归的叙事体验。
+循环结构允许读者返回之前的状态，创造迭代和递归的叙事体验。这种结构深刻地探讨了时间、记忆、成长和宿命等主题，是最具哲学深度的叙事形式之一。
 
 #### 特征
 - **重复性**：相同内容在不同语境下呈现不同意义
 - **累积性**：每次循环可能累积新的信息或状态
 - **时间悖论**：可以探索因果循环和时间旅行主题
+- **元认知**：角色/读者意识到循环的存在
+- **螺旋上升**：表面重复，实质进步
 
 #### 设计原则
 1. **变化性**：每次循环应该有所不同
+   - **知识累积**：保留关键信息
+   - **技能成长**：能力的持续提升
+   - **关系深化**：人物互动的递进
+   - **视角转换**：新的理解角度
+
 2. **退出条件**：明确定义循环终止的条件
+   - **任务完成**：达成特定目标
+   - **觉悟达成**：理解深层真相
+   - **完美通关**：所有人都得救
+   - **接受宿命**：与循环和解
+
 3. **进度感**：让读者感受到即使在循环中也在前进
+   - 解锁新区域/选项
+   - 累积成就系统
+   - 故事碎片收集
+   - NPC记忆变化
+
+#### 循环结构的类型
+
+1. **时间循环（Time Loop）**
+```
+[Day 1] -> [事件A] -> [事件B] -> [死亡/重置]
+   ↑                                    ↓
+   +------- [保留记忆/物品] <-----------+
+```
+
+2. **递归叙事（Recursive Narrative）**
+```
+[外层故事]
+    |
+    +-> [内层故事1]
+            |
+            +-> [内层故事2]
+                    |
+                    +-> [核心真相]
+                    |
+            <-------+
+    <-------+
+[新的理解]
+```
+
+3. **轮回结构（Samsara Structure）**
+```
+[生命1] -> [死亡] -> [转生] -> [生命2]
+   ↑                               ↓
+   +<--- [业力延续] <--- [死亡] <--+
+```
+
+#### 技术实现策略
+
+```python
+class LoopNarrative:
+    def __init__(self):
+        self.loop_count = 0
+        self.persistent_state = {}  # 跨循环保持
+        self.loop_state = {}        # 单循环内有效
+        self.unlocked_content = set()
+        self.exit_conditions = []
+        
+    def start_new_loop(self):
+        self.loop_count += 1
+        self.loop_state = {}  # 重置循环内状态
+        
+        # 根据循环次数解锁新内容
+        if self.loop_count == 3:
+            self.unlocked_content.add("hidden_path_A")
+        elif self.loop_count == 7:
+            self.unlocked_content.add("true_ending")
+            
+        return self.generate_loop_variation()
+    
+    def generate_loop_variation(self):
+        base_content = self.get_base_content()
+        
+        # 根据持久状态修改内容
+        for key, value in self.persistent_state.items():
+            base_content = self.apply_variation(base_content, key, value)
+            
+        # 添加新解锁的内容
+        for content_id in self.unlocked_content:
+            base_content = self.insert_new_content(base_content, content_id)
+            
+        return base_content
+    
+    def check_exit_conditions(self):
+        for condition in self.exit_conditions:
+            if condition(self.persistent_state, self.loop_count):
+                return True
+        return False
+```
+
+#### 循环中的叙事技巧
+
+1. **渐进式揭示**
+   - 第1次循环：建立基础规则
+   - 第2-3次：发现异常和线索
+   - 第4-6次：拼凑真相碎片
+   - 第7+次：寻找突破方法
+
+2. **情感曲线设计**
+   ```
+   希望 -> 困惑 -> 绝望 -> 接受 -> 决心 -> 突破
+   ```
+
+3. **多层次目标**
+   - 表层：逃离循环
+   - 中层：拯救他人
+   - 深层：自我救赎
+
+#### 实际应用案例
+
+**《侦探神宫寺三郎》(The Sexy Brutale)**
+- 12小时时间循环
+- 每次循环拯救一位客人
+- 获得新能力开启新区域
+- 最终揭示循环的根源
+
+**《零号时间困境》(Zero Time Dilemma)**
+- 片段化的时间循环
+- 不同时间线的信息互补
+- 量子力学式的多重结局
+- 玩家需要主动"失败"来获取信息
+
+**《异度神剑3》(Xenoblade Chronicles 3)**
+- 宏观的生命循环
+- 角色在不知情中重复轮回
+- 通过觉醒打破循环
+- 探讨自由意志vs宿命
+
+#### 设计陷阱与解决方案
+
+1. **重复疲劳**
+   - 问题：玩家厌倦重复内容
+   - 解决：快进机制、自动化已知部分
+
+2. **进度不明**
+   - 问题：玩家不知道离目标多远
+   - 解决：进度提示、收集要素显示
+
+3. **逻辑混乱**
+   - 问题：时间悖论导致剧情矛盾
+   - 解决：建立清晰的循环规则
 
 ## 2.2 状态机与叙事图
 
 ### 2.2.1 叙事状态机基础
 
-状态机是管理非线性叙事复杂性的强大工具。在叙事语境中，状态机包括：
+状态机是管理非线性叙事复杂性的强大工具。借鉴自计算机科学的有限状态机（FSM）概念，叙事状态机提供了一种系统化的方法来组织、追踪和控制故事的流动。
+
+#### 核心概念
 
 - **状态（States）**：故事中的特定场景或情境
+  - 场景状态：具体的叙事片段
+  - 系统状态：游戏/故事的整体状况
+  - 角色状态：人物的心理或物理状态
+
 - **转换（Transitions）**：从一个状态到另一个状态的条件
+  - 玩家选择触发
+  - 时间流逝触发
+  - 条件满足触发
+
 - **动作（Actions）**：状态转换时触发的事件
+  - 更新游戏世界
+  - 改变角色属性
+  - 解锁新内容
+
 - **守卫（Guards）**：控制转换是否可以发生的条件
+  - 前置条件检查
+  - 资源需求验证
+  - 剧情逻辑约束
+
+#### 状态机的数学模型
+
+```python
+from enum import Enum
+from typing import Dict, List, Callable, Optional
+
+class StateType(Enum):
+    SCENE = "scene"
+    MENU = "menu"
+    DIALOGUE = "dialogue"
+    COMBAT = "combat"
+    CUTSCENE = "cutscene"
+
+class NarrativeState:
+    def __init__(self, id: str, type: StateType, content: dict):
+        self.id = id
+        self.type = type
+        self.content = content
+        self.on_enter: List[Callable] = []
+        self.on_exit: List[Callable] = []
+        self.transitions: Dict[str, 'Transition'] = {}
+    
+    def add_transition(self, trigger: str, target: str, 
+                      guard: Optional[Callable] = None,
+                      action: Optional[Callable] = None):
+        self.transitions[trigger] = Transition(self, target, guard, action)
+    
+    def can_transition(self, trigger: str, context: dict) -> bool:
+        if trigger not in self.transitions:
+            return False
+        return self.transitions[trigger].is_valid(context)
+
+class Transition:
+    def __init__(self, source: NarrativeState, target: str,
+                 guard: Optional[Callable] = None,
+                 action: Optional[Callable] = None):
+        self.source = source
+        self.target = target
+        self.guard = guard
+        self.action = action
+    
+    def is_valid(self, context: dict) -> bool:
+        if self.guard is None:
+            return True
+        return self.guard(context)
+    
+    def execute(self, context: dict):
+        if self.action:
+            self.action(context)
+
+class NarrativeStateMachine:
+    def __init__(self):
+        self.states: Dict[str, NarrativeState] = {}
+        self.current_state: Optional[NarrativeState] = None
+        self.context = {
+            'player_stats': {},
+            'world_state': {},
+            'history': [],
+            'flags': set()
+        }
+    
+    def add_state(self, state: NarrativeState):
+        self.states[state.id] = state
+    
+    def transition(self, trigger: str) -> bool:
+        if not self.current_state:
+            return False
+        
+        if not self.current_state.can_transition(trigger, self.context):
+            return False
+        
+        transition = self.current_state.transitions[trigger]
+        target_state = self.states[transition.target]
+        
+        # 执行退出动作
+        for action in self.current_state.on_exit:
+            action(self.context)
+        
+        # 执行转换动作
+        transition.execute(self.context)
+        
+        # 更新历史
+        self.context['history'].append({
+            'from': self.current_state.id,
+            'to': target_state.id,
+            'trigger': trigger,
+            'timestamp': time.time()
+        })
+        
+        # 切换状态
+        self.current_state = target_state
+        
+        # 执行进入动作
+        for action in target_state.on_enter:
+            action(self.context)
+        
+        return True
+```
 
 #### 状态机设计模式
 
-1. **简单状态机**
+1. **简单状态机（Simple State Machine）**
 ```
-[初始] --选择--> [分支A] --完成--> [结束A]
+[初始] --选择A--> [分支A] --完成--> [结束A]
    |                                    
-   +----选择--> [分支B] --完成--> [结束B]
+   +----选择B--> [分支B] --完成--> [结束B]
 ```
+适用于：线性分支叙事、简单选择题
 
-2. **层级状态机**
+2. **层级状态机（Hierarchical State Machine）**
 ```
 [主线剧情]
     |
-    +-- [第一章]
+    +-- [第一章] (父状态)
     |      |
-    |      +-- [场景1.1]
-    |      +-- [场景1.2]
+    |      +-- [场景1.1] --完成--> [场景1.2]
+    |      +-- [场景1.2] --完成--> [第一章.结束]
     |
-    +-- [第二章]
+    +-- [第二章] (父状态)
            |
-           +-- [场景2.1]
-           +-- [场景2.2]
+           +-- [场景2.1] --分支--> [场景2.2a]
+           |                  \--> [场景2.2b]
+           +-- [场景2.2a/b] --> [第二章.结束]
 ```
+优势：
+- 模块化管理复杂剧情
+- 状态可以继承父状态的属性
+- 便于整章节的跳转和管理
 
-3. **并行状态机**
+3. **并行状态机（Parallel State Machine）**
 ```
-[游戏世界]
+[游戏世界] (正交区域)
     |
     +-- [主线任务状态机]
+    |     当前: [寻找线索]
     |
-    +-- [支线任务状态机]
+    +-- [时间系统状态机]  
+    |     当前: [黄昏]
     |
     +-- [角色关系状态机]
+          当前: [友好度:75]
 ```
+特点：
+- 多个状态机同时运行
+- 状态间可以相互影响
+- 适合开放世界设计
+
+4. **历史状态（History State）**
+```python
+class HistoryState(NarrativeState):
+    def __init__(self, parent_state: str):
+        super().__init__(f"{parent_state}_history", StateType.MENU, {})
+        self.parent_state = parent_state
+        self.last_state = None
+    
+    def remember_state(self, state_id: str):
+        self.last_state = state_id
+    
+    def get_target_state(self):
+        return self.last_state or self.parent_state
+```
+
+使用场景：
+- 暂停菜单返回
+- 回忆场景
+- 多线程叙事切换
 
 ### 2.2.2 叙事图的可视化与分析
 
