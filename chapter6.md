@@ -298,6 +298,366 @@ class ContextManager:
         省略：重复信息、环境细节、已解决的问题
         """
         # 调用AI生成摘要...
+        summary = self.call_ai_for_summary(summary_prompt)
+        self.context_layers['summary'].append(summary)
+        
+        # 清理已摘要的内容
+        self.context_layers['recent'] = self.context_layers['recent'][10:]
+
+def adaptive_prompt_strategies(narrative_phase):
+    """根据叙事阶段调整提示策略"""
+    strategies = {
+        "exposition": {
+            "focus": "世界构建和角色介绍",
+            "techniques": ["感官细节", "环境描写", "背景暗示"],
+            "avoid": ["过快的节奏", "复杂冲突", "深层秘密揭露"]
+        },
+        "rising_action": {
+            "focus": "张力积累和线索铺设",
+            "techniques": ["悬念制造", "角色冲突", "障碍设置"],
+            "avoid": ["过早解决", "偏离主线", "节奏拖沓"]
+        },
+        "climax": {
+            "focus": "冲突爆发和真相揭示",
+            "techniques": ["快节奏", "高风险选择", "情感爆发"],
+            "avoid": ["新线索引入", "冗长描述", "突兀转折"]
+        },
+        "resolution": {
+            "focus": "线索收束和情感共鸣",
+            "techniques": ["回应伏笔", "角色成长", "主题升华"],
+            "avoid": ["新冲突", "开放过多", "仓促结束"]
+        }
+    }
+    return strategies.get(narrative_phase, strategies["exposition"])
+```
+
+#### 多模态提示融合
+
+将文本提示与其他模态信息结合，创造更丰富的叙事体验：
+
+```python
+class MultiModalPromptFusion:
+    def __init__(self):
+        self.modalities = {
+            'text': {'weight': 0.5},
+            'emotion': {'weight': 0.2},
+            'visual': {'weight': 0.2},
+            'audio': {'weight': 0.1}
+        }
+    
+    def create_fusion_prompt(self, inputs):
+        """融合多种输入模态生成统一提示"""
+        
+        # 文本层：核心叙事内容
+        text_prompt = inputs.get('text', '')
+        
+        # 情感层：引导叙事基调
+        emotion_layer = self.encode_emotion(inputs.get('emotion', 'neutral'))
+        
+        # 视觉层：场景和氛围描述
+        visual_cues = self.process_visual_input(inputs.get('visual', {}))
+        
+        # 音频层：节奏和张力暗示
+        audio_hints = self.extract_audio_patterns(inputs.get('audio', {}))
+        
+        # 智能融合
+        fusion_prompt = f"""
+        ## 多维度叙事指引
+        
+        ### 核心叙述
+        {text_prompt}
+        
+        ### 情感基调
+        当前情感状态：{emotion_layer['current']}
+        目标情感弧线：{emotion_layer['target']}
+        情感转换速度：{emotion_layer['transition_speed']}
+        
+        ### 视觉氛围
+        场景主色调：{visual_cues['dominant_colors']}
+        光线条件：{visual_cues['lighting']}
+        空间感受：{visual_cues['spatial_feeling']}
+        关键视觉元素：{', '.join(visual_cues['key_elements'])}
+        
+        ### 叙事节奏
+        基础节拍：{audio_hints['tempo']}
+        张力曲线：{audio_hints['tension_curve']}
+        停顿点：{audio_hints['pause_points']}
+        
+        请根据以上多维度信息，生成符合整体氛围的叙事内容...
+        """
+        
+        return fusion_prompt
+    
+    def encode_emotion(self, emotion_input):
+        """将情感输入编码为叙事指导"""
+        emotion_map = {
+            'joy': {'energy': 'high', 'tone': 'bright', 'pace': 'lively'},
+            'sadness': {'energy': 'low', 'tone': 'muted', 'pace': 'slow'},
+            'fear': {'energy': 'tense', 'tone': 'sharp', 'pace': 'irregular'},
+            'anger': {'energy': 'explosive', 'tone': 'harsh', 'pace': 'rapid'},
+            'mystery': {'energy': 'controlled', 'tone': 'ambiguous', 'pace': 'measured'}
+        }
+        
+        if isinstance(emotion_input, str):
+            return emotion_map.get(emotion_input, emotion_map['mystery'])
+        elif isinstance(emotion_input, dict):
+            # 支持复合情感
+            return self.blend_emotions(emotion_input)
+```
+
+#### 实时反馈循环
+
+建立读者反馈与AI生成之间的动态循环：
+
+```python
+class RealtimeFeedbackLoop:
+    def __init__(self):
+        self.feedback_history = []
+        self.adjustment_threshold = 0.7
+        self.learning_rate = 0.1
+        
+    def process_reader_feedback(self, generated_content, reader_response):
+        """处理读者反馈并调整生成策略"""
+        
+        # 分析读者反应
+        feedback_analysis = {
+            'engagement_level': self.measure_engagement(reader_response),
+            'emotional_response': self.detect_emotion(reader_response),
+            'comprehension': self.assess_comprehension(reader_response),
+            'satisfaction': self.gauge_satisfaction(reader_response)
+        }
+        
+        # 识别问题区域
+        issues = self.identify_issues(feedback_analysis)
+        
+        # 生成改进建议
+        improvements = self.generate_improvements(issues)
+        
+        # 更新提示策略
+        updated_strategy = self.update_prompt_strategy(improvements)
+        
+        return updated_strategy
+    
+    def measure_engagement(self, response):
+        """测量读者参与度"""
+        indicators = {
+            'response_length': len(response.get('text', '')),
+            'response_time': response.get('time_taken', 0),
+            'action_complexity': self.analyze_action_complexity(response),
+            'question_count': response.get('questions_asked', 0)
+        }
+        
+        # 归一化并加权计算
+        engagement_score = (
+            indicators['response_length'] / 100 * 0.3 +
+            min(indicators['response_time'] / 60, 1) * 0.2 +
+            indicators['action_complexity'] * 0.3 +
+            indicators['question_count'] / 3 * 0.2
+        )
+        
+        return min(engagement_score, 1.0)
+    
+    def adaptive_difficulty_adjustment(self, reader_profile):
+        """根据读者能力动态调整叙事复杂度"""
+        
+        complexity_factors = {
+            'vocabulary': {
+                'current': reader_profile.get('vocab_level', 0.5),
+                'target': self.calculate_optimal_vocab_level(reader_profile),
+                'adjustment_rate': 0.05
+            },
+            'plot_complexity': {
+                'current': reader_profile.get('plot_tracking', 0.5),
+                'target': self.calculate_optimal_plot_complexity(reader_profile),
+                'adjustment_rate': 0.03
+            },
+            'symbolic_depth': {
+                'current': reader_profile.get('symbolism_appreciation', 0.3),
+                'target': self.calculate_optimal_symbolism(reader_profile),
+                'adjustment_rate': 0.02
+            }
+        }
+        
+        # 渐进式调整
+        for factor, params in complexity_factors.items():
+            if abs(params['current'] - params['target']) > 0.1:
+                adjustment = (params['target'] - params['current']) * params['adjustment_rate']
+                params['current'] += adjustment
+                
+        return complexity_factors
+```
+
+#### 协作式世界构建
+
+让AI和读者共同构建故事世界：
+
+```python
+class CollaborativeWorldBuilding:
+    def __init__(self):
+        self.world_state = {}
+        self.contribution_history = []
+        self.consistency_checker = ConsistencyEngine()
+        
+    def integrate_reader_contribution(self, contribution, context):
+        """整合读者贡献到世界设定中"""
+        
+        # 验证贡献的一致性
+        validation = self.consistency_checker.validate(contribution, self.world_state)
+        
+        if validation['is_consistent']:
+            # 直接整合
+            self.world_state.update(contribution)
+            return self.generate_acknowledgment(contribution)
+            
+        elif validation['can_be_adapted']:
+            # 适配后整合
+            adapted = self.adapt_contribution(contribution, validation['conflicts'])
+            self.world_state.update(adapted)
+            return self.generate_adapted_acknowledgment(contribution, adapted)
+            
+        else:
+            # 创造性地处理冲突
+            resolution = self.creative_conflict_resolution(
+                contribution, 
+                validation['conflicts']
+            )
+            return resolution
+    
+    def generate_world_building_prompt(self, focus_area):
+        """生成引导读者参与世界构建的提示"""
+        
+        prompts = {
+            'geography': """
+            你发现了一张古老地图的碎片。上面标注着一个从未被记录的地区。
+            这个地方有什么独特之处？它如何连接到已知世界？
+            
+            已知世界要素：
+            {known_geography}
+            
+            请描述你的发现...
+            """,
+            
+            'culture': """
+            你遇到了一个神秘部落的使者。他们的习俗似乎很独特。
+            他们如何问候？有什么禁忌？他们崇拜什么？
+            
+            已知文化体系：
+            {known_cultures}
+            
+            请描述这个新文化...
+            """,
+            
+            'magic_system': """
+            你偶然发现了一种新的魔法形式。它的原理是什么？
+            有什么限制？需要什么代价？
+            
+            已知魔法规则：
+            {known_magic}
+            
+            请解释这种新魔法...
+            """,
+            
+            'history': """
+            在古代遗迹中，你发现了一段被遗忘的历史。
+            这段历史如何改变了对当前世界的理解？
+            
+            已知历史事件：
+            {known_history}
+            
+            请讲述这段历史...
+            """
+        }
+        
+        chosen_prompt = prompts.get(focus_area, prompts['geography'])
+        return chosen_prompt.format(**self.get_relevant_world_info(focus_area))
+```
+
+#### 智能错误恢复
+
+当AI生成出现问题时的优雅恢复机制：
+
+```python
+class IntelligentErrorRecovery:
+    def __init__(self):
+        self.error_patterns = {}
+        self.recovery_strategies = {}
+        self.learning_enabled = True
+        
+    def detect_and_recover(self, generated_content, context):
+        """检测生成内容中的错误并恢复"""
+        
+        errors = self.detect_errors(generated_content, context)
+        
+        if not errors:
+            return generated_content
+            
+        # 按严重程度排序
+        errors.sort(key=lambda x: x['severity'], reverse=True)
+        
+        # 应用恢复策略
+        recovered_content = generated_content
+        for error in errors:
+            strategy = self.select_recovery_strategy(error)
+            recovered_content = self.apply_recovery(
+                recovered_content, 
+                error, 
+                strategy,
+                context
+            )
+            
+        # 验证恢复效果
+        if self.validate_recovery(recovered_content, context):
+            return recovered_content
+        else:
+            # 降级到安全模式
+            return self.safe_mode_generation(context)
+    
+    def detect_errors(self, content, context):
+        """检测各类叙事错误"""
+        
+        errors = []
+        
+        # 1. 角色一致性错误
+        character_errors = self.check_character_consistency(content, context)
+        errors.extend(character_errors)
+        
+        # 2. 世界规则违反
+        world_errors = self.check_world_rules(content, context)
+        errors.extend(world_errors)
+        
+        # 3. 时间线混乱
+        timeline_errors = self.check_timeline_consistency(content, context)
+        errors.extend(timeline_errors)
+        
+        # 4. 逻辑矛盾
+        logic_errors = self.check_logical_consistency(content, context)
+        errors.extend(logic_errors)
+        
+        # 5. 风格突变
+        style_errors = self.check_style_consistency(content, context)
+        errors.extend(style_errors)
+        
+        return errors
+    
+    def recovery_strategies(self):
+        """定义各类错误的恢复策略"""
+        return {
+            'character_inconsistency': {
+                'mild': self.soft_character_correction,
+                'moderate': self.character_reinterpretation,
+                'severe': self.character_reset
+            },
+            'world_rule_violation': {
+                'mild': self.rule_bending_explanation,
+                'moderate': self.exception_justification,
+                'severe': self.reality_shift
+            },
+            'timeline_confusion': {
+                'mild': self.temporal_clarification,
+                'moderate': self.flashback_reframe,
+                'severe': self.timeline_reset
+            }
+        }
 ```
 
 ## 6.2 程序化内容生成：规则与随机性
@@ -824,6 +1184,339 @@ class CollaborativeWorkflow:
         """
         
         return self.ai_model.generate(expansion_prompt)
+```
+
+#### 语义验证与逻辑推理
+
+确保生成内容的语义连贯和逻辑一致：
+
+```python
+class SemanticValidator:
+    def __init__(self):
+        self.knowledge_base = KnowledgeGraph()
+        self.inference_engine = LogicalReasoner()
+        
+    def validate_semantic_consistency(self, generated_text, context):
+        """验证生成文本的语义一致性"""
+        
+        # 提取实体和关系
+        entities = self.extract_entities(generated_text)
+        relations = self.extract_relations(generated_text)
+        
+        # 检查事实一致性
+        fact_violations = []
+        for entity in entities:
+            known_facts = self.knowledge_base.get_facts(entity)
+            stated_facts = self.extract_entity_properties(
+                entity, 
+                generated_text
+            )
+            
+            conflicts = self.find_conflicts(known_facts, stated_facts)
+            if conflicts:
+                fact_violations.extend(conflicts)
+                
+        # 检查逻辑一致性
+        logical_violations = self.inference_engine.check_consistency(
+            relations,
+            self.knowledge_base
+        )
+        
+        return {
+            'is_valid': len(fact_violations) == 0 and len(logical_violations) == 0,
+            'fact_violations': fact_violations,
+            'logical_violations': logical_violations
+        }
+    
+    def semantic_repair(self, text, violations):
+        """修复语义违规"""
+        repair_strategies = {
+            'contradiction': self.resolve_contradiction,
+            'missing_context': self.add_context,
+            'broken_causality': self.repair_causality,
+            'inconsistent_timeline': self.fix_timeline
+        }
+        
+        repaired_text = text
+        for violation in violations:
+            strategy = repair_strategies.get(
+                violation['type'], 
+                self.generic_repair
+            )
+            repaired_text = strategy(repaired_text, violation)
+            
+        return repaired_text
+```
+
+#### 动态规则生成
+
+让系统自动学习和生成新的叙事规则：
+
+```python
+class DynamicRuleGenerator:
+    def __init__(self):
+        self.pattern_analyzer = PatternAnalyzer()
+        self.rule_synthesizer = RuleSynthesizer()
+        self.effectiveness_tracker = EffectivenessTracker()
+        
+    def learn_from_successful_narratives(self, narrative_corpus, ratings):
+        """从成功的叙事中学习模式"""
+        
+        # 识别高评分叙事的共同模式
+        high_rated = [
+            n for n, r in zip(narrative_corpus, ratings) 
+            if r > 4.0
+        ]
+        
+        patterns = self.pattern_analyzer.extract_patterns(high_rated)
+        
+        # 将模式转化为可执行规则
+        new_rules = []
+        for pattern in patterns:
+            rule = self.pattern_to_rule(pattern)
+            if self.validate_rule(rule):
+                new_rules.append(rule)
+                
+        return new_rules
+    
+    def pattern_to_rule(self, pattern):
+        """将识别的模式转换为生成规则"""
+        
+        rule_template = {
+            'name': f"rule_{pattern['id']}",
+            'condition': self.synthesize_condition(pattern),
+            'action': self.synthesize_action(pattern),
+            'weight': self.calculate_initial_weight(pattern),
+            'metadata': {
+                'source_pattern': pattern,
+                'creation_time': datetime.now(),
+                'confidence': pattern['confidence']
+            }
+        }
+        
+        return Rule(rule_template)
+    
+    def meta_rule_generation(self):
+        """生成控制其他规则的元规则"""
+        
+        meta_rules = {
+            'conflict_resolution': """
+            当多个规则冲突时：
+            1. 优先级：情节关键 > 角色一致性 > 世界设定
+            2. 新近性：最近建立的事实优先
+            3. 影响范围：局部规则优于全局规则
+            """,
+            
+            'rule_activation': """
+            规则激活条件：
+            1. 上下文相关性 > 0.7
+            2. 与当前叙事阶段匹配
+            3. 不违反已激活的约束
+            """,
+            
+            'adaptive_weighting': """
+            动态调整规则权重：
+            - 成功应用：权重 * 1.1
+            - 产生冲突：权重 * 0.9
+            - 读者喜欢：权重 * 1.2
+            - 读者困惑：权重 * 0.8
+            """
+        }
+        
+        return meta_rules
+```
+
+#### 多智能体协作系统
+
+使用多个专门化的AI智能体协同创作：
+
+```python
+class MultiAgentNarrativeSystem:
+    def __init__(self):
+        self.agents = {
+            'plot_architect': PlotAgent(),
+            'character_psychologist': CharacterAgent(),
+            'world_builder': WorldAgent(),
+            'dialogue_master': DialogueAgent(),
+            'style_editor': StyleAgent(),
+            'continuity_checker': ContinuityAgent()
+        }
+        self.coordinator = NarrativeCoordinator()
+        
+    def collaborative_generation(self, prompt, context):
+        """多智能体协作生成"""
+        
+        # 阶段1：独立生成
+        proposals = {}
+        for agent_name, agent in self.agents.items():
+            if agent.is_relevant(prompt, context):
+                proposal = agent.generate_proposal(prompt, context)
+                proposals[agent_name] = proposal
+                
+        # 阶段2：协商与整合
+        negotiation_rounds = 0
+        consensus = False
+        
+        while not consensus and negotiation_rounds < 5:
+            # 交换提议
+            for agent_name, agent in self.agents.items():
+                other_proposals = {
+                    k: v for k, v in proposals.items() 
+                    if k != agent_name
+                }
+                
+                # 智能体评估其他提议
+                feedback = agent.evaluate_proposals(other_proposals)
+                
+                # 根据反馈调整自己的提议
+                if agent.should_adjust(feedback):
+                    proposals[agent_name] = agent.adjust_proposal(
+                        proposals[agent_name],
+                        feedback
+                    )
+                    
+            # 检查是否达成共识
+            consensus = self.check_consensus(proposals)
+            negotiation_rounds += 1
+            
+        # 阶段3：最终整合
+        if consensus:
+            final_narrative = self.coordinator.integrate_proposals(
+                proposals
+            )
+        else:
+            # 协调者强制整合
+            final_narrative = self.coordinator.mediate_conflicts(
+                proposals
+            )
+            
+        # 阶段4：质量保证
+        final_narrative = self.quality_assurance(final_narrative)
+        
+        return final_narrative
+    
+    def quality_assurance(self, narrative):
+        """多智能体质量检查"""
+        
+        issues = []
+        
+        # 每个智能体从自己的专业角度检查
+        for agent_name, agent in self.agents.items():
+            agent_issues = agent.quality_check(narrative)
+            if agent_issues:
+                issues.extend(agent_issues)
+                
+        # 如果有问题，启动修复流程
+        if issues:
+            return self.collaborative_repair(narrative, issues)
+            
+        return narrative
+```
+
+#### 实时学习与适应
+
+系统在运行时不断学习和改进：
+
+```python
+class RealtimeLearningSystem:
+    def __init__(self):
+        self.experience_buffer = ExperienceReplay(capacity=10000)
+        self.model_updater = OnlineModelUpdater()
+        self.performance_monitor = PerformanceMonitor()
+        
+    def learn_from_interaction(self, interaction):
+        """从每次交互中学习"""
+        
+        # 记录交互
+        experience = {
+            'input': interaction['user_input'],
+            'output': interaction['ai_output'],
+            'feedback': interaction.get('user_feedback'),
+            'context': interaction['context'],
+            'timestamp': datetime.now()
+        }
+        
+        self.experience_buffer.add(experience)
+        
+        # 实时分析
+        if interaction.get('user_feedback'):
+            self.process_immediate_feedback(experience)
+            
+        # 批量学习
+        if self.experience_buffer.size() % 100 == 0:
+            self.batch_learning()
+            
+    def process_immediate_feedback(self, experience):
+        """处理即时反馈"""
+        
+        feedback_type = self.classify_feedback(experience['feedback'])
+        
+        if feedback_type == 'negative':
+            # 立即分析问题
+            issue_analysis = self.analyze_negative_feedback(experience)
+            
+            # 更新生成策略
+            self.update_generation_strategy(issue_analysis)
+            
+            # 记录到问题模式库
+            self.record_problematic_pattern(issue_analysis)
+            
+        elif feedback_type == 'positive':
+            # 强化成功模式
+            self.reinforce_successful_pattern(experience)
+            
+    def adaptive_generation_parameters(self, context):
+        """根据学习动态调整生成参数"""
+        
+        # 获取相似上下文的历史表现
+        similar_experiences = self.experience_buffer.get_similar(
+            context, 
+            k=10
+        )
+        
+        # 分析最佳参数
+        optimal_params = self.analyze_optimal_parameters(
+            similar_experiences
+        )
+        
+        # 考虑全局趋势
+        global_trends = self.performance_monitor.get_trends()
+        
+        # 综合调整
+        adjusted_params = self.balance_parameters(
+            optimal_params,
+            global_trends,
+            context
+        )
+        
+        return adjusted_params
+    
+    def continuous_improvement_loop(self):
+        """持续改进循环"""
+        
+        while True:
+            # 收集一定时间窗口的数据
+            recent_data = self.experience_buffer.get_recent(hours=24)
+            
+            # 识别改进机会
+            improvement_opportunities = self.identify_improvements(
+                recent_data
+            )
+            
+            # 生成改进假设
+            hypotheses = self.generate_hypotheses(
+                improvement_opportunities
+            )
+            
+            # A/B测试验证
+            for hypothesis in hypotheses:
+                test_result = self.run_ab_test(hypothesis)
+                
+                if test_result['significant'] and test_result['positive']:
+                    self.implement_improvement(hypothesis)
+                    
+            # 休眠直到下一个改进周期
+            time.sleep(3600)  # 每小时一次
 ```
 
 ## 6.3 案例研究：《AI Dungeon》与《无限故事》
