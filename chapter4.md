@@ -223,6 +223,422 @@ const attentionStrategies = {
    - 文化特定的象征物
    - 共通的原型符号
 
+### 1.7 视觉叙事的情感机制
+
+#### 神经美学与情感反应
+
+视觉刺激如何转化为情感体验？神经美学研究揭示了大脑处理视觉美感的机制：
+
+**情感触发路径：**
+```
+视觉刺激 → 初级视觉皮层 → 高级视觉区域 → 情感中枢（杏仁核、岛叶）
+    ↓           ↓              ↓                 ↓
+  形状识别    模式分析      意义解读         情感反应
+```
+
+**关键发现：**
+1. **快速情感通道**：某些视觉刺激（如面部表情）可以绕过意识处理，直接触发情感
+2. **美感神经回路**：欣赏美的事物会激活奖赏系统，释放多巴胺
+3. **共情镜像**：看到他人的情感表达会激活观察者相同的情感区域
+4. **预期与满足**：视觉节奏的建立与打破会产生紧张-释放的情感循环
+
+#### 色彩心理学的深层应用
+
+色彩不仅影响情绪，还能影响时间感知、空间感知甚至生理反应：
+
+```javascript
+const colorPsychology = {
+  temperature: {
+    warm: {
+      colors: ['red', 'orange', 'yellow'],
+      effects: {
+        timePerception: 'faster', // 时间似乎过得更快
+        spacePerception: 'closer', // 空间显得更近
+        arousal: 'increased',      // 提高唤醒水平
+        appetite: 'stimulated'     // 刺激食欲
+      }
+    },
+    cool: {
+      colors: ['blue', 'green', 'purple'],
+      effects: {
+        timePerception: 'slower',
+        spacePerception: 'farther',
+        arousal: 'decreased',
+        focus: 'enhanced'
+      }
+    }
+  },
+  
+  saturation: {
+    high: {
+      emotion: 'intense',
+      attention: 'immediate',
+      memory: 'vivid'
+    },
+    low: {
+      emotion: 'subtle',
+      attention: 'gentle',
+      memory: 'nostalgic'
+    }
+  }
+};
+```
+
+#### 动态视觉的心理影响
+
+运动和变化对心理状态的影响：
+
+1. **速度感知与情绪**
+   - 缓慢移动：平静、沉思、忧郁
+   - 快速移动：兴奋、紧张、混乱
+   - 加速运动：期待、紧张升级
+   - 减速运动：释放、解决、结束
+
+2. **运动模式的含义**
+   ```javascript
+   const motionPatterns = {
+     linear: '目标明确、理性、机械',
+     curved: '自然、优雅、情感化',
+     erratic: '混乱、不安、疯狂',
+     circular: '循环、永恒、困境',
+     spiral: '深入、迷失、成长'
+   };
+   ```
+
+3. **视觉节律与生理同步**
+   - 呼吸节奏：2-3秒的循环最舒适
+   - 心跳节奏：60-80 BPM的视觉节奏产生平静感
+   - 眨眼节奏：每3-4秒的视觉变化符合自然眨眼
+
+### 1.8 视觉叙事的空间设计
+
+#### 画面空间的心理学
+
+画面不同区域承载着不同的心理权重和象征意义：
+
+```javascript
+class FramePsychology {
+  constructor() {
+    this.zones = {
+      topLeft: {
+        meaning: '过去、起源、已知',
+        weight: 0.7,
+        emotion: '怀旧、安全'
+      },
+      topRight: {
+        meaning: '未来、目标、理想',
+        weight: 0.8,
+        emotion: '希望、憧憬'
+      },
+      center: {
+        meaning: '现在、焦点、冲突',
+        weight: 1.0,
+        emotion: '紧张、重要'
+      },
+      bottomLeft: {
+        meaning: '基础、潜意识、隐藏',
+        weight: 0.6,
+        emotion: '不安、神秘'
+      },
+      bottomRight: {
+        meaning: '结果、行动、现实',
+        weight: 0.9,
+        emotion: '决心、落实'
+      }
+    };
+  }
+  
+  calculateComposition(elements) {
+    let totalTension = 0;
+    let balanceVector = { x: 0, y: 0 };
+    
+    elements.forEach(element => {
+      const zone = this.getZone(element.position);
+      totalTension += zone.weight * element.importance;
+      
+      // 计算视觉平衡
+      balanceVector.x += element.position.x * element.visualWeight;
+      balanceVector.y += element.position.y * element.visualWeight;
+    });
+    
+    return {
+      tension: totalTension,
+      balance: balanceVector,
+      stable: Math.abs(balanceVector.x) < 0.1 && Math.abs(balanceVector.y) < 0.1
+    };
+  }
+}
+```
+
+#### 深度层次的构建
+
+创造视觉深度的技术手段及其叙事功能：
+
+1. **透视深度**
+   - 线性透视：理性世界、都市感
+   - 大气透视：距离感、时间感
+   - 色彩透视：情感距离
+
+2. **遮挡关系**
+   ```css
+   /* 通过z-index创造叙事层次 */
+   .past-memory {
+     z-index: 1;
+     opacity: 0.6;
+     filter: blur(2px);
+   }
+   
+   .present-reality {
+     z-index: 10;
+     opacity: 1;
+   }
+   
+   .future-possibility {
+     z-index: 5;
+     opacity: 0.8;
+     mix-blend-mode: screen;
+   }
+   ```
+
+3. **焦点控制**
+   - 景深模拟：引导注意力
+   - 选择性清晰：暗示重要性
+   - 焦点转换：叙事转折
+
+### 1.9 视觉符号学与叙事
+
+#### 符号的层次结构
+
+皮尔斯符号学在视觉叙事中的应用：
+
+1. **图像符号（Icon）**
+   - 直接相似性：照片、写实插画
+   - 简化相似性：图标、简笔画
+   - 功能：快速识别、普遍理解
+
+2. **指示符号（Index）**
+   - 因果关系：烟→火、影子→光源
+   - 痕迹关系：脚印、弹孔、裂纹
+   - 功能：暗示、推理、悬念
+
+3. **象征符号（Symbol）**
+   - 文化约定：红心→爱情、骷髅→死亡
+   - 个人象征：作品内建立的专属符号
+   - 功能：深层含义、主题强化
+
+#### 视觉修辞手法
+
+将文学修辞转化为视觉表达：
+
+```javascript
+const visualRhetoric = {
+  metaphor: {
+    technique: '用一个视觉元素代表另一个概念',
+    example: '破碎的镜子表现破碎的自我',
+    implementation: {
+      literal: false,
+      symbolic: true,
+      layers: ['surface_image', 'deep_meaning']
+    }
+  },
+  
+  synecdoche: {
+    technique: '局部代表整体',
+    example: '一双眼睛代表整个人物',
+    implementation: {
+      focus: 'detail',
+      implication: 'whole',
+      cinematicTechnique: 'extreme_closeup'
+    }
+  },
+  
+  juxtaposition: {
+    technique: '对比并置产生新含义',
+    example: '豪宅与贫民窟的画面对比',
+    implementation: {
+      layout: 'split_screen',
+      transition: 'hard_cut',
+      meaning: 'emerges_from_contrast'
+    }
+  },
+  
+  repetition: {
+    technique: '重复强化主题',
+    example: '循环出现的视觉母题',
+    implementation: {
+      frequency: 'rhythmic',
+      variation: 'slight_changes',
+      purpose: 'reinforce_theme'
+    }
+  }
+};
+```
+
+### 1.10 视觉叙事的时间性
+
+#### 静态图像中的时间
+
+如何在静止画面中表现时间流逝：
+
+1. **运动暗示**
+   ```css
+   /* 运动模糊效果 */
+   .motion-blur {
+     filter: blur(0);
+     position: relative;
+   }
+   
+   .motion-blur::after {
+     content: '';
+     position: absolute;
+     top: 0;
+     left: 0;
+     right: 0;
+     bottom: 0;
+     background: inherit;
+     filter: blur(10px);
+     opacity: 0.6;
+     transform: translateX(-20px);
+   }
+   ```
+
+2. **时间标记**
+   - 光线角度：表明一天中的时间
+   - 季节元素：落叶、雪花、新芽
+   - 人工标记：时钟、日历、老化痕迹
+
+3. **序列暗示**
+   - 连续动作的关键帧
+   - 成长阶段的并置
+   - 因果关系的视觉化
+
+#### 时间密度的控制
+
+```javascript
+class TemporalDensity {
+  constructor() {
+    this.densityLevels = {
+      sparse: {
+        description: '大量留白，缓慢节奏',
+        elementsPerScreen: '1-3',
+        usage: '沉思、等待、孤独'
+      },
+      moderate: {
+        description: '适中信息量，正常节奏',
+        elementsPerScreen: '4-7',
+        usage: '日常叙事、对话场景'
+      },
+      dense: {
+        description: '信息密集，快速节奏',
+        elementsPerScreen: '8+',
+        usage: '高潮、混乱、信息过载'
+      }
+    };
+  }
+  
+  calculateReadingTime(elements) {
+    // 根据元素复杂度估算阅读时间
+    let totalTime = 0;
+    
+    elements.forEach(element => {
+      switch(element.type) {
+        case 'text':
+          totalTime += element.wordCount * 0.25; // 每词0.25秒
+          break;
+        case 'image':
+          totalTime += element.complexity * 1.5; // 复杂度×1.5秒
+          break;
+        case 'animation':
+          totalTime += element.duration;
+          break;
+      }
+    });
+    
+    return totalTime;
+  }
+}
+```
+
+### 1.11 交互性与能动性
+
+#### 读者视线的预测与引导
+
+眼动研究揭示的视觉浏览模式：
+
+1. **F模式**（文本密集页面）
+   - 顶部横向浏览
+   - 略低位置的第二次横向浏览
+   - 左侧垂直浏览
+
+2. **Z模式**（视觉为主页面）
+   - 左上→右上
+   - 对角线到左下
+   - 左下→右下
+
+3. **视觉引导技术**
+   ```javascript
+   const guidanceTechniques = {
+     contrast: {
+       method: '明暗对比引导',
+       strength: 'high',
+       subtlety: 'low'
+     },
+     motion: {
+       method: '动态元素吸引',
+       strength: 'very_high',
+       subtlety: 'medium'
+     },
+     gaze: {
+       method: '人物视线引导',
+       strength: 'medium',
+       subtlety: 'high'
+     },
+     path: {
+       method: '视觉路径设计',
+       strength: 'medium',
+       subtlety: 'medium'
+     }
+   };
+   ```
+
+#### 交互的心理预期
+
+用户对交互元素的心理模型：
+
+```javascript
+class InteractionExpectations {
+  constructor() {
+    this.affordances = {
+      button: {
+        visual: '凸起、阴影、边框',
+        behavior: '点击后状态变化',
+        feedback: '即时视觉/听觉反馈'
+      },
+      link: {
+        visual: '下划线、颜色差异',
+        behavior: '悬停变化、点击跳转',
+        feedback: '光标变化'
+      },
+      draggable: {
+        visual: '抓手光标、纹理暗示',
+        behavior: '跟随鼠标移动',
+        feedback: '拖动时半透明'
+      }
+    };
+  }
+  
+  validateInteraction(element) {
+    const expectedAffordances = this.affordances[element.type];
+    const actualAffordances = element.getAffordances();
+    
+    return {
+      meetsExpectations: this.compare(expectedAffordances, actualAffordances),
+      suggestions: this.getSuggestions(element.type, actualAffordances)
+    };
+  }
+}
+```
+
 ## 2. 视觉小说的语法系统
 
 视觉小说作为一种成熟的叙事形式，已经发展出了自己独特的"语法"——一套被创作者和读者共同理解的视觉表达规则。这套语法借鉴了电影、漫画、戏剧等多种艺术形式，但又根据交互性媒介的特点进行了创新。
@@ -578,37 +994,746 @@ class ChoicePresentation {
   }
 }
 
-### 2.2 视觉节奏与时机
+### 2.6 高级演出技巧
 
-优秀的视觉小说懂得控制"视觉节奏"：
+#### 镜头语言的数字化转译
 
-```python
-# 视觉节奏示例
-scene morning_confession:
-    bg school_rooftop day  # 背景：学校天台，白天
-    with fade              # 淡入效果，1秒
+虽然视觉小说是静态为主的媒介，但可以模拟电影的镜头语言：
+
+```javascript
+class CameraEffects {
+  constructor(scene) {
+    this.scene = scene;
+    this.camera = {
+      position: { x: 0, y: 0, z: 1 },
+      rotation: 0,
+      fov: 60
+    };
+  }
+  
+  // 推镜头（Dolly In）
+  dollyIn(target, duration = 2) {
+    return this.animate({
+      scale: { from: 1, to: 1.5 },
+      focus: target,
+      blur: { background: true, strength: 5 },
+      duration: duration,
+      easing: 'easeInOutQuad'
+    });
+  }
+  
+  // 拉镜头（Dolly Out）
+  dollyOut(duration = 2) {
+    return this.animate({
+      scale: { from: 1.5, to: 1 },
+      blur: { background: false },
+      duration: duration,
+      easing: 'easeInOutQuad'
+    });
+  }
+  
+  // 摇镜头（Pan）
+  pan(direction, distance, duration = 1.5) {
+    const movements = {
+      left: { x: -distance, y: 0 },
+      right: { x: distance, y: 0 },
+      up: { x: 0, y: -distance },
+      down: { x: 0, y: distance }
+    };
     
-    show alice neutral at left  # Alice出现在左侧
-    with dissolve              # 溶解效果，0.5秒
-    
-    alice "我有话要说..."     # 对话
-    
-    show alice happy          # 切换到开心表情
-    with move                # 移动动画
-    
-    pause 0.5               # 停顿，营造期待
-    
-    show cg confession      # 显示特殊CG
-    with flash             # 闪光效果
+    return this.animate({
+      position: movements[direction],
+      duration: duration,
+      easing: 'easeInOutSine'
+    });
+  }
+  
+  // 主观视角（POV）
+  switchToPOV(character) {
+    return {
+      effect: 'vignette',
+      blur: { edges: true, strength: 3 },
+      shake: { intensity: 1, frequency: 60 }, // 模拟呼吸
+      filter: character.visionFilter // 角色特定的视觉滤镜
+    };
+  }
+  
+  // 荷兰角（Dutch Angle）
+  dutchAngle(degrees = 15, duration = 0.5) {
+    return this.animate({
+      rotation: degrees,
+      duration: duration,
+      purpose: 'disorientation' // 用于表现不安、混乱
+    });
+  }
+}
 ```
 
-### 2.3 构图原则
+#### 时间操纵技术
 
-借鉴电影和漫画的构图技巧：
+视觉小说可以自由操纵时间流动：
 
-- **三分法则**：将画面分成九宫格，重要元素放在交叉点
-- **视线引导**：利用线条、光影引导读者视线
-- **留白的力量**：适当的空白创造想象空间
+```javascript
+class TimeManipulation {
+  constructor() {
+    this.timeEffects = {
+      // 慢动作
+      slowMotion: {
+        implementation: () => {
+          this.setAnimationSpeed(0.3);
+          this.addMotionBlur();
+          this.increaseFPS(); // 插帧使动作更流畅
+        },
+        usage: '强调重要时刻、情感冲击'
+      },
+      
+      // 时间冻结
+      freeze: {
+        implementation: () => {
+          this.pauseAllAnimations();
+          this.addCrystallizeEffect();
+          this.muteAmbientSounds();
+        },
+        usage: '思考时刻、重大决定前'
+      },
+      
+      // 快进
+      fastForward: {
+        implementation: () => {
+          this.setAnimationSpeed(5);
+          this.addSpeedLines();
+          this.pitchUpAudio(1.5);
+        },
+        usage: '跳过日常、时间流逝'
+      },
+      
+      // 倒放
+      rewind: {
+        implementation: () => {
+          this.reverseAnimations();
+          this.addGlitchEffect();
+          this.reverseAudio();
+        },
+        usage: '回忆、后悔、时间循环'
+      },
+      
+      // 时间分层
+      temporalLayers: {
+        implementation: () => {
+          return {
+            past: { opacity: 0.5, filter: 'sepia', position: 'background' },
+            present: { opacity: 1, filter: 'none', position: 'midground' },
+            future: { opacity: 0.7, filter: 'blur', position: 'foreground' }
+          };
+        },
+        usage: '展示不同时间线、因果关系'
+      }
+    };
+  }
+}
+```
+
+### 2.7 情感渲染系统
+
+#### 内心独白的视觉化
+
+将角色的内心世界外化为视觉元素：
+
+```javascript
+class InnerWorldVisualization {
+  constructor(character) {
+    this.character = character;
+    this.emotionalPalette = this.generateEmotionalPalette();
+  }
+  
+  // 思维泡泡系统
+  thoughtBubbles(thoughts) {
+    return thoughts.map((thought, index) => ({
+      content: thought.text,
+      style: {
+        opacity: thought.clarity, // 清晰度表示确定性
+        size: thought.importance * 100, // 重要性决定大小
+        position: this.calculateThoughtPosition(index),
+        animation: thought.recurring ? 'float-loop' : 'fade-in-out',
+        color: this.emotionalPalette[thought.emotion]
+      },
+      connections: thought.associations.map(assoc => ({
+        to: assoc.id,
+        strength: assoc.strength,
+        type: assoc.type // 'cause', 'contrast', 'memory'
+      }))
+    }));
+  }
+  
+  // 情绪风暴效果
+  emotionalStorm(emotions) {
+    const particles = [];
+    
+    emotions.forEach(emotion => {
+      for (let i = 0; i < emotion.intensity * 100; i++) {
+        particles.push({
+          type: emotion.name,
+          position: this.randomPosition(),
+          velocity: this.emotionVelocity(emotion),
+          lifespan: emotion.duration,
+          visual: this.emotionVisual(emotion)
+        });
+      }
+    });
+    
+    return {
+      particles: particles,
+      turbulence: this.calculateTurbulence(emotions),
+      centerPoint: this.findEmotionalCenter(emotions)
+    };
+  }
+  
+  // 记忆碎片可视化
+  memoryFragments(memories) {
+    return {
+      layout: 'scattered', // 散落的布局
+      fragments: memories.map(memory => ({
+        image: memory.snapshot,
+        completeness: memory.clarity, // 0-1，越模糊越不完整
+        distortion: 1 - memory.accuracy, // 记忆的扭曲程度
+        emotional_tint: this.getMemoryTint(memory.emotion),
+        interactive: memory.importance > 0.7, // 重要记忆可交互
+        decay_rate: memory.age * 0.1 // 老记忆逐渐消失
+      }))
+    };
+  }
+}
+```
+
+#### 共感觉设计
+
+将不同感官体验转化为视觉表现：
+
+```javascript
+const synesthesiaDesign = {
+  // 声音的视觉化
+  soundToVisual: {
+    volume: {
+      quiet: { size: 'small', opacity: 0.3, ripples: 1 },
+      normal: { size: 'medium', opacity: 0.7, ripples: 3 },
+      loud: { size: 'large', opacity: 1, ripples: 5 }
+    },
+    pitch: {
+      low: { color: 'deep_purple', waveform: 'sine' },
+      medium: { color: 'blue', waveform: 'triangle' },
+      high: { color: 'yellow', waveform: 'sawtooth' }
+    },
+    texture: {
+      smooth: { particle_type: 'circles', flow: 'laminar' },
+      rough: { particle_type: 'squares', flow: 'turbulent' },
+      sharp: { particle_type: 'triangles', flow: 'explosive' }
+    }
+  },
+  
+  // 触感的视觉化
+  touchToVisual: {
+    temperature: {
+      cold: { 
+        filter: 'blue_tint', 
+        particles: 'snowflakes',
+        edges: 'crystalline'
+      },
+      warm: {
+        filter: 'orange_glow',
+        particles: 'soft_orbs',
+        edges: 'blurred'
+      },
+      hot: {
+        filter: 'red_shimmer',
+        particles: 'embers',
+        edges: 'wavering'
+      }
+    },
+    texture: {
+      smooth: { surface: 'glossy', reflection: 0.8 },
+      rough: { surface: 'matte', noise: 0.6 },
+      soft: { surface: 'fuzzy', blur: 0.3 }
+    }
+  },
+  
+  // 味觉的视觉化
+  tasteToVisual: {
+    sweet: { colors: ['pink', 'light_yellow'], shapes: 'rounded' },
+    sour: { colors: ['green', 'yellow'], shapes: 'sharp' },
+    bitter: { colors: ['dark_green', 'brown'], shapes: 'angular' },
+    salty: { colors: ['white', 'grey'], shapes: 'crystalline' },
+    umami: { colors: ['deep_red', 'brown'], shapes: 'complex' }
+  }
+};
+```
+
+### 2.8 动态构图系统
+
+#### 情境响应式构图
+
+根据叙事情境自动调整构图：
+
+```javascript
+class DynamicComposition {
+  constructor() {
+    this.compositionRules = {
+      // 对话场景
+      dialogue: {
+        twoCharacter: {
+          intimate: {
+            distance: 'close',
+            angle: 'slight_angle',
+            overlap: 0.1, // 轻微重叠暗示亲密
+            focusBalance: 'equal'
+          },
+          confrontational: {
+            distance: 'medium',
+            angle: 'facing',
+            overlap: 0,
+            focusBalance: 'alternating',
+            divider: 'vertical_line' // 视觉分割
+          },
+          hierarchical: {
+            distance: 'varied',
+            angle: 'diagonal',
+            heights: 'different', // 高度差表示地位
+            focusBalance: 'weighted'
+          }
+        },
+        group: {
+          circle: 'equality',
+          triangle: 'tension',
+          line: 'hierarchy',
+          scatter: 'chaos'
+        }
+      },
+      
+      // 动作场景
+      action: {
+        chase: {
+          layout: 'diagonal_movement',
+          speedLines: true,
+          blurBackground: true,
+          cameraShake: { intensity: 0.3 }
+        },
+        fight: {
+          layout: 'dynamic_centers',
+          impactFrames: true,
+          splitSecond: true,
+          focusShift: 'rapid'
+        }
+      },
+      
+      // 情感场景
+      emotional: {
+        revelation: {
+          layout: 'center_focus',
+          vignette: 'strong',
+          backgroundFade: 0.8,
+          lightSource: 'top_center'
+        },
+        despair: {
+          layout: 'bottom_heavy',
+          tilt: -5, // 轻微倾斜
+          darkness: 'creeping',
+          focusLoss: 'gradual'
+        }
+      }
+    };
+  }
+  
+  applyComposition(sceneType, subType, parameters) {
+    const rules = this.compositionRules[sceneType][subType];
+    return this.generateLayout(rules, parameters);
+  }
+}
+```
+
+### 2.9 界面语言的叙事整合
+
+#### 对话框的表现力扩展
+
+对话框不仅是文字容器，更是表达工具：
+
+```javascript
+class ExpressiveDialogueBox {
+  constructor() {
+    this.styles = new Map();
+    this.animations = new Map();
+  }
+  
+  // 根据说话方式生成样式
+  generateStyle(speechType) {
+    const styles = {
+      whisper: {
+        fontSize: '80%',
+        opacity: 0.7,
+        letterSpacing: '0.05em',
+        animation: 'fade-pulse 3s infinite',
+        borderStyle: 'dotted',
+        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+        textShadow: 'none'
+      },
+      
+      shout: {
+        fontSize: '120%',
+        fontWeight: 'bold',
+        letterSpacing: '0.1em',
+        animation: 'shake 0.3s',
+        borderWidth: '4px',
+        borderColor: '#ff0000',
+        backgroundColor: '#ffcccc',
+        textTransform: 'uppercase'
+      },
+      
+      stutter: {
+        fontSize: '100%',
+        animation: 'stutter-text 2s',
+        letterSpacing: 'normal',
+        wordSpacing: '0.3em',
+        textRendering: 'optimizeLegibility'
+      },
+      
+      thought: {
+        fontSize: '95%',
+        fontStyle: 'italic',
+        opacity: 0.85,
+        borderRadius: '20px',
+        border: 'none',
+        background: 'radial-gradient(ellipse at center, #e0e0ff 0%, transparent 70%)',
+        boxShadow: 'inset 0 0 20px rgba(0, 0, 100, 0.2)'
+      },
+      
+      system: {
+        fontFamily: 'monospace',
+        fontSize: '90%',
+        color: '#00ff00',
+        backgroundColor: '#000000',
+        border: '1px solid #00ff00',
+        borderRadius: '0',
+        padding: '15px',
+        animation: 'terminal-blink 1s steps(2) infinite'
+      },
+      
+      ancient: {
+        fontFamily: 'serif',
+        fontSize: '110%',
+        color: '#d4af37',
+        textShadow: '2px 2px 4px rgba(0, 0, 0, 0.8)',
+        backgroundColor: '#2c1810',
+        border: '3px ridge #8b6914',
+        padding: '20px',
+        backgroundImage: 'url(parchment-texture.png)'
+      }
+    };
+    
+    return styles[speechType] || styles.normal;
+  }
+  
+  // 动态文字效果
+  applyTextEffects(text, effects) {
+    const effectProcessors = {
+      // 逐字显示
+      typewriter: (text, speed = 50) => {
+        return {
+          animation: `typewriter ${text.length * speed}ms steps(${text.length}) forwards`,
+          overflow: 'hidden',
+          whiteSpace: 'nowrap'
+        };
+      },
+      
+      // 颤抖效果
+      tremble: (text, intensity = 1) => {
+        return text.split('').map((char, i) => 
+          `<span style="animation: tremble ${100 + i * 10}ms infinite; 
+                         animation-delay: ${i * 20}ms;
+                         display: inline-block;
+                         animation-amplitude: ${intensity}px;">
+            ${char}
+          </span>`
+        ).join('');
+      },
+      
+      // 波浪效果
+      wave: (text, amplitude = 10) => {
+        return text.split('').map((char, i) => 
+          `<span style="animation: wave 2s ease-in-out infinite;
+                         animation-delay: ${i * 0.1}s;
+                         display: inline-block;
+                         transform-origin: bottom;">
+            ${char}
+          </span>`
+        ).join('');
+      },
+      
+      // 故障效果
+      glitch: (text) => {
+        return `
+          <span class="glitch" data-text="${text}">
+            ${text}
+          </span>
+        `;
+      }
+    };
+    
+    return effectProcessors[effects.type](text, effects.parameters);
+  }
+}
+```
+
+### 2.10 音画联动机制
+
+#### 视觉与声音的精确同步
+
+```javascript
+class AudioVisualSync {
+  constructor() {
+    this.syncPoints = [];
+    this.visualCues = new Map();
+  }
+  
+  // 节拍同步系统
+  beatSync(audioTrack) {
+    const beats = this.detectBeats(audioTrack);
+    
+    return beats.map(beat => ({
+      time: beat.time,
+      strength: beat.strength,
+      visualEffect: this.mapBeatToVisual(beat),
+      characterReaction: this.mapBeatToCharacter(beat)
+    }));
+  }
+  
+  // 情绪音乐映射
+  emotionalMusicMapping = {
+    layers: {
+      tension: {
+        instruments: ['strings_tremolo', 'low_brass'],
+        visualEffects: {
+          vignette: { intensity: 0.3, color: 'dark_red' },
+          shake: { amplitude: 2, frequency: 30 },
+          particleSystem: 'dust_motes'
+        }
+      },
+      
+      romance: {
+        instruments: ['piano_soft', 'strings_legato', 'harp'],
+        visualEffects: {
+          glow: { intensity: 0.5, color: 'warm_pink' },
+          particles: 'rose_petals',
+          depthOfField: { strength: 0.7 }
+        }
+      },
+      
+      mystery: {
+        instruments: ['ambient_pads', 'prepared_piano', 'whispers'],
+        visualEffects: {
+          fog: { density: 0.6, movement: 'slow_swirl' },
+          chromatic_aberration: { strength: 0.3 },
+          shadows: { length: 'extended', sharpness: 0.2 }
+        }
+      }
+    }
+  };
+  
+  // 声音事件触发器
+  soundEventTriggers = {
+    footsteps: {
+      visual: 'ripple_at_position',
+      duration: 0.3,
+      intensity: 'varies_with_volume'
+    },
+    
+    heartbeat: {
+      visual: 'screen_pulse',
+      sync: 'exact',
+      affectUI: true // UI元素也会脉动
+    },
+    
+    clockTick: {
+      visual: 'time_distortion',
+      accumulative: true, // 效果累积
+      breakpoint: 60 // 60次后触发特殊效果
+    }
+  };
+}
+```
+
+### 2.11 高级界面效果
+
+#### 打破第四面墙
+
+```javascript
+class FourthWallBreaking {
+  constructor() {
+    this.techniques = {
+      // 界面故障
+      interfaceGlitch: {
+        trigger: 'story_event',
+        effects: [
+          'ui_corruption',
+          'button_malfunction',
+          'text_scramble'
+        ],
+        duration: 'until_player_action'
+      },
+      
+      // 假崩溃
+      fakeCrash: {
+        sequence: [
+          { action: 'freeze_game', duration: 2000 },
+          { action: 'show_error', message: 'Memory corruption detected' },
+          { action: 'glitch_screen', intensity: 'increasing' },
+          { action: 'black_screen', duration: 1000 },
+          { action: 'reveal_truth', method: 'slow_fade' }
+        ]
+      },
+      
+      // 选项入侵
+      choiceInvasion: {
+        normalChoices: ['Yes', 'No', 'Maybe'],
+        invasionSequence: [
+          { add: '...', position: 'random' },
+          { modify: 'Maybe', to: 'Maybe?' },
+          { add: 'HELP ME', style: 'glitched' },
+          { remove: 'No', replaced_with: 'YOU CANNOT REFUSE' }
+        ]
+      },
+      
+      // 存档操纵
+      saveManipulation: {
+        effects: {
+          corruptSaveNames: true,
+          addFakeSaves: ['Unknown Player', 'HELP', '???'],
+          preventSaving: { duration: 'chapter', reason: 'narrative' }
+        }
+      }
+    };
+  }
+}
+```
+
+### 2.12 视觉小说的节奏控制
+
+#### 微观节奏：场景内的时间掌控
+
+```javascript
+class MicroRhythm {
+  constructor() {
+    this.pacing = {
+      // 紧张建立
+      tensionBuildup: {
+        textSpeed: 'gradually_slower',
+        pauses: 'increasing_duration',
+        music: 'crescendo',
+        visual: 'zoom_in_slowly'
+      },
+      
+      // 情感爆发
+      emotionalClimax: {
+        sequence: [
+          { element: 'screen_flash', duration: 100 },
+          { element: 'full_stop', duration: 1500 },
+          { element: 'cg_reveal', effect: 'shatter_transition' },
+          { element: 'music_peak', sync: 'exact' },
+          { element: 'ui_hide', duration: 3000 }
+        ]
+      },
+      
+      // 平静过渡
+      quietTransition: {
+        fadeOut: ['music', 'ambient_sounds', 'ui_elements'],
+        fadeIn: ['new_background', 'soft_ambient', 'minimal_ui'],
+        duration: 4000,
+        curve: 'ease-in-out'
+      }
+    };
+  }
+  
+  // 呼吸感设计
+  createBreathingRhythm() {
+    return {
+      inhale: {
+        duration: 2000,
+        elements: {
+          background: 'slight_brighten',
+          characters: 'subtle_scale_up',
+          particles: 'slow_rise'
+        }
+      },
+      hold: {
+        duration: 1000,
+        elements: 'all_pause'
+      },
+      exhale: {
+        duration: 2500,
+        elements: {
+          background: 'slight_darken',
+          characters: 'subtle_scale_down',
+          particles: 'gentle_fall'
+        }
+      }
+    };
+  }
+}
+```
+
+#### 宏观节奏：章节间的起承转合
+
+```javascript
+class MacroRhythm {
+  constructor() {
+    this.chapterStructure = {
+      opening: {
+        pace: 'moderate',
+        visualDensity: 'low',
+        interactionFrequency: 'minimal',
+        purpose: 'establish_atmosphere'
+      },
+      
+      development: {
+        pace: 'variable',
+        visualDensity: 'increasing',
+        interactionFrequency: 'regular',
+        purpose: 'build_engagement'
+      },
+      
+      climax: {
+        pace: 'rapid',
+        visualDensity: 'maximum',
+        interactionFrequency: 'critical_only',
+        purpose: 'emotional_peak'
+      },
+      
+      resolution: {
+        pace: 'decelerating',
+        visualDensity: 'decreasing',
+        interactionFrequency: 'reflective',
+        purpose: 'process_experience'
+      }
+    };
+  }
+  
+  // 节奏变化曲线
+  generatePacingCurve(chapter) {
+    const points = [];
+    const segments = 20;
+    
+    for (let i = 0; i < segments; i++) {
+      const progress = i / segments;
+      const intensity = this.calculateIntensity(chapter.type, progress);
+      
+      points.push({
+        time: progress,
+        intensity: intensity,
+        elements: this.getElementsForIntensity(intensity)
+      });
+    }
+    
+    return points;
+  }
+}
+```
 
 ## 3. 滚动叙事：纵向的时间轴
 
