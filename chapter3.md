@@ -77,6 +77,17 @@
 
 这种方式不仅改变了阅读体验，更是改变了故事的本质——从"被讲述的故事"变成"可探索的世界"。
 
+#### 案例：《她的故事》(Her Story)
+
+2015年的游戏《她的故事》完美诠释了数据库叙事的力量。玩家扮演一个调查员，面对的是一个包含数百段审讯录像片段的数据库。没有预设的观看顺序，玩家通过搜索关键词来发现新的片段。
+
+每个玩家的体验都是独特的：
+- 有人从"谋杀"开始搜索，直接进入案件核心
+- 有人从"汉娜"（嫌疑人名字）开始，逐步了解人物
+- 有人注意到细节（如"镜子"），发现了隐藏的真相
+
+这种设计让每个玩家都成为了自己故事的"编辑"，通过查询构建出属于自己的叙事序列。
+
 ### 数据库模式 vs 传统叙事结构
 
 让我们对比两种思维模式：
@@ -108,6 +119,74 @@
 | 外键（Foreign Key） | 叙事关联 | 角色参与的事件、事件发生地点 |
 | 索引（Index） | 快速访问路径 | 按时间线索引、按地理位置索引 |
 | 视图（View） | 特定视角叙事 | 从某角色视角看世界、特定时期的事件 |
+
+#### 实践案例：构建一个简单的叙事数据库
+
+让我们通过一个具体例子来理解这种映射。假设我们要为一个科幻故事构建数据库：
+
+```sql
+-- 创建基础表结构
+CREATE TABLE characters (
+    id INTEGER PRIMARY KEY,
+    name TEXT NOT NULL,
+    species TEXT DEFAULT 'human',
+    birth_year INTEGER,
+    home_planet TEXT,
+    allegiance TEXT,
+    special_ability TEXT,
+    trust_level FLOAT DEFAULT 0.5
+);
+
+CREATE TABLE planets (
+    id INTEGER PRIMARY KEY,
+    name TEXT NOT NULL,
+    coordinates TEXT,
+    atmosphere TEXT,
+    population INTEGER,
+    tech_level INTEGER CHECK(tech_level BETWEEN 1 AND 10),
+    discovered_year INTEGER
+);
+
+CREATE TABLE events (
+    id INTEGER PRIMARY KEY,
+    event_name TEXT NOT NULL,
+    event_type TEXT CHECK(event_type IN ('battle', 'discovery', 'betrayal', 'alliance')),
+    location_id INTEGER REFERENCES planets(id),
+    impact_level INTEGER CHECK(impact_level BETWEEN 1 AND 10),
+    year INTEGER,
+    description TEXT
+);
+
+-- 关系表：角色参与事件
+CREATE TABLE character_events (
+    character_id INTEGER REFERENCES characters(id),
+    event_id INTEGER REFERENCES events(id),
+    role TEXT CHECK(role IN ('protagonist', 'antagonist', 'witness', 'victim')),
+    survival_status BOOLEAN DEFAULT TRUE,
+    PRIMARY KEY (character_id, event_id)
+);
+```
+
+这个结构允许读者进行丰富的查询探索：
+
+```sql
+-- 查询：哪些角色曾经背叛过盟友？
+SELECT DISTINCT c.name, e.event_name, e.year
+FROM characters c
+JOIN character_events ce ON c.id = ce.character_id
+JOIN events e ON ce.event_id = e.id
+WHERE e.event_type = 'betrayal' 
+  AND ce.role = 'antagonist'
+ORDER BY e.year;
+
+-- 查询：技术水平最高的星球上发生过哪些重大事件？
+SELECT p.name AS planet, p.tech_level, e.event_name, e.impact_level
+FROM planets p
+JOIN events e ON p.id = e.location_id
+WHERE p.tech_level >= 8 
+  AND e.impact_level >= 7
+ORDER BY e.year DESC;
+```
 
 ### CRUD操作作为叙事动作
 
@@ -143,6 +222,52 @@ AND timestamp < '10 years ago';
 ### 查询即探索：读者成为数据侦探
 
 在数据库叙事中，读者通过查询来"阅读"故事。每个查询都可能揭示新的叙事线索。这种机制将被动接收转化为主动发现，让每个读者都能成为故事世界的"数据侦探"。
+
+#### 设计哲学：信息的层次性披露
+
+优秀的数据库叙事需要精心设计信息的层次结构：
+
+1. **表层信息**：基础查询即可获得的公开信息
+2. **深层信息**：需要复杂查询或满足条件才能发现
+3. **隐藏信息**：需要特殊触发条件或多重查询组合
+
+```python
+class NarrativeDatabase:
+    def __init__(self):
+        self.public_data = {}  # 公开信息
+        self.restricted_data = {}  # 需要条件的信息
+        self.hidden_data = {}  # 隐藏信息
+        self.reader_progress = {}  # 读者进度追踪
+    
+    def query(self, sql, reader_id):
+        # 基础查询结果
+        base_results = self.execute_query(sql)
+        
+        # 检查读者是否满足深层信息条件
+        if self.check_reader_progress(reader_id):
+            base_results.extend(self.get_restricted_data(sql))
+        
+        # 检查是否触发隐藏信息
+        if self.check_hidden_triggers(sql, reader_id):
+            base_results.extend(self.reveal_hidden_data(sql))
+            self.notify_reader("你发现了隐藏的真相！")
+        
+        return base_results
+    
+    def check_hidden_triggers(self, sql, reader_id):
+        # 示例：当读者查询特定组合时触发
+        triggers = {
+            "SELECT * FROM deaths WHERE cause = 'unknown'": 
+                lambda: self.reader_progress[reader_id].get('clues_found', 0) >= 5,
+            "SELECT * FROM relationships WHERE hidden = true":
+                lambda: 'family_tree' in self.reader_progress[reader_id].get('unlocked_views', [])
+        }
+        
+        for pattern, condition in triggers.items():
+            if pattern in sql and condition():
+                return True
+        return False
+```
 
 #### 查询的叙事力量
 
@@ -228,6 +353,85 @@ ORDER BY degree;
 拥有                 发生于
  ↓                    ↓
 物品 ←→ 存放于 ←→ 地点
+```
+
+#### 关系设计的叙事含义
+
+每种关系类型都有其独特的叙事潜力：
+
+**一对一关系的戏剧性**
+```sql
+-- 灵魂绑定物品：一个物品只能有一个真正的主人
+CREATE TABLE soul_bonds (
+    character_id INTEGER PRIMARY KEY REFERENCES characters(id),
+    artifact_id INTEGER UNIQUE REFERENCES artifacts(id),
+    bond_strength FLOAT CHECK(bond_strength BETWEEN 0 AND 1),
+    bond_type TEXT CHECK(bond_type IN ('chosen', 'inherited', 'forged')),
+    consequence_of_separation TEXT
+);
+
+-- 查询：谁是真命天子？
+SELECT c.name, a.name as artifact, sb.bond_strength
+FROM characters c
+JOIN soul_bonds sb ON c.id = sb.character_id
+JOIN artifacts a ON sb.artifact_id = a.id
+WHERE a.name = '王者之剑' AND sb.bond_strength = 1.0;
+```
+
+**一对多关系的权力动态**
+```sql
+-- 师徒关系：一个导师可以有多个学生
+CREATE TABLE mentorships (
+    id INTEGER PRIMARY KEY,
+    mentor_id INTEGER REFERENCES characters(id),
+    student_id INTEGER REFERENCES characters(id),
+    teaching_focus TEXT,
+    loyalty_score FLOAT,
+    betrayal_risk FLOAT GENERATED ALWAYS AS 
+        (CASE WHEN loyalty_score < 0.3 THEN 0.8 ELSE 0.2 END) STORED,
+    UNIQUE(mentor_id, student_id)
+);
+
+-- 查询：哪些门派面临背叛危机？
+SELECT m.name as mentor, 
+       COUNT(ms.student_id) as student_count,
+       AVG(ms.betrayal_risk) as avg_betrayal_risk
+FROM characters m
+JOIN mentorships ms ON m.id = ms.mentor_id
+GROUP BY m.id
+HAVING AVG(ms.betrayal_risk) > 0.5
+ORDER BY avg_betrayal_risk DESC;
+```
+
+**多对多关系的复杂网络**
+```sql
+-- 阴谋网络：多个角色可以参与多个阴谋
+CREATE TABLE conspiracies (
+    id INTEGER PRIMARY KEY,
+    name TEXT NOT NULL,
+    goal TEXT,
+    secrecy_level INTEGER CHECK(secrecy_level BETWEEN 1 AND 10),
+    status TEXT CHECK(status IN ('planning', 'active', 'exposed', 'succeeded', 'failed'))
+);
+
+CREATE TABLE conspiracy_members (
+    conspiracy_id INTEGER REFERENCES conspiracies(id),
+    character_id INTEGER REFERENCES characters(id),
+    role TEXT CHECK(role IN ('leader', 'core', 'peripheral', 'unwitting')),
+    knowledge_level FLOAT CHECK(knowledge_level BETWEEN 0 AND 1),
+    commitment_level FLOAT,
+    PRIMARY KEY(conspiracy_id, character_id)
+);
+
+-- 查询：谁是多重间谍？
+SELECT c.name, COUNT(DISTINCT cm.conspiracy_id) as conspiracy_count,
+       STRING_AGG(con.name, ', ') as involved_in
+FROM characters c
+JOIN conspiracy_members cm ON c.id = cm.character_id
+JOIN conspiracies con ON cm.conspiracy_id = con.id
+WHERE con.status = 'active'
+GROUP BY c.id
+HAVING COUNT(DISTINCT cm.conspiracy_id) > 1;
 ```
 
 ### 实践示例：家族史数据库
@@ -397,6 +601,80 @@ class FamilyNarrativeGenerator:
         elif relationship.type == '宿敌后代':
             return f"复仇的执念引导{discoverer.name}找到了这个秘密。"\
                    f"{keeper.name}的罪行终于要大白于天下..."
+        elif relationship.type == '陌生人':
+            return f"纯属偶然，{discoverer.name}在{secret.location}发现了"\
+                   f"这个尘封已久的秘密。命运的齿轮开始转动..."
+    
+    def generate_pattern_revelation(self, pattern_type, affected_members):
+        """根据发现的模式生成叙事"""
+        patterns = {
+            'curse_repetition': {
+                'intro': "数据中浮现出令人不安的规律...",
+                'body': "每隔三代，相同的悲剧就会重演。",
+                'revelation': "这不是巧合，而是诅咒的印记。"
+            },
+            'hidden_bloodline': {
+                'intro': "交叉对比DNA记录和历史文献...",
+                'body': "官方家谱之外，存在着一条隐秘的血脉。",
+                'revelation': "私生子的后代，如今已成为家族的核心。"
+            },
+            'betrayal_cycle': {
+                'intro': "背叛的历史在重复自己...",
+                'body': f"已有{len(affected_members)}人走上了相同的道路。",
+                'revelation': "是环境造就了叛徒，还是血脉中的宿命？"
+            }
+        }
+        
+        pattern = patterns.get(pattern_type, patterns['curse_repetition'])
+        return f"{pattern['intro']}\n{pattern['body']}\n{pattern['revelation']}"
+```
+
+### 数据库叙事的设计原则
+
+成功的数据库叙事需要遵循以下原则：
+
+1. **信息密度平衡**：每个查询都应该提供有价值的信息，但不能一次性暴露所有秘密
+
+2. **查询引导设计**：通过UI提示、自动完成等方式，引导读者发现关键查询路径
+
+3. **叙事一致性维护**：使用数据库约束确保故事逻辑的内在一致性
+
+4. **渐进式复杂度**：从简单查询开始，逐步引导读者使用更复杂的查询技巧
+
+```python
+class NarrativeQueryAssistant:
+    """帮助读者逐步掌握查询技巧的助手"""
+    
+    def __init__(self):
+        self.query_templates = {
+            'beginner': [
+                "SELECT * FROM characters WHERE name = ?",
+                "SELECT * FROM events WHERE year = ?",
+                "SELECT * FROM places WHERE name LIKE ?"
+            ],
+            'intermediate': [
+                "SELECT c.name, e.event_name FROM characters c "
+                "JOIN character_events ce ON c.id = ce.character_id "
+                "JOIN events e ON ce.event_id = e.id WHERE e.year = ?",
+                
+                "SELECT * FROM characters WHERE id IN "
+                "(SELECT character_id FROM character_traits WHERE trait = ?)"
+            ],
+            'advanced': [
+                "WITH RECURSIVE ancestors AS (...) SELECT * FROM ancestors",
+                "SELECT * FROM events e1 WHERE EXISTS "
+                "(SELECT 1 FROM events e2 WHERE e2.caused_by = e1.id)",
+            ]
+        }
+    
+    def suggest_next_query(self, user_history, current_discoveries):
+        """基于用户历史和当前发现，推荐下一步查询"""
+        if len(user_history) < 5:
+            return self.query_templates['beginner']
+        elif len(current_discoveries) < 10:
+            return self.query_templates['intermediate']
+        else:
+            return self.query_templates['advanced']
 ```
 
 ## 3.2 Wiki模式：协作世界构建的艺术
@@ -423,6 +701,43 @@ Wiki不仅仅是一种技术，更是一种叙事哲学。它体现了几个革�
          ↓
 2020s: 现代知识图谱 → AI辅助、语义化、多媒体集成
 ```
+
+#### 技术演进与叙事能力的提升
+
+每一代Wiki技术都解锁了新的叙事可能性：
+
+| 时代 | 核心特性 | 叙事创新 | 代表案例 |
+|-----|---------|---------|---------|
+| 1.0 | 超链接、版本控制 | 非线性阅读路径 | C2 Wiki |
+| 2.0 | 模板、分类、讨论页 | 结构化内容、元叙事空间 | Wikipedia |
+| 3.0 | 语义标注、API | 可查询的故事世界 | Semantic MediaWiki |
+| 4.0 | AI增强、实时协作 | 动态生成、个性化体验 | Notion, Obsidian |
+
+#### 现代Wiki平台的叙事特性对比
+
+```python
+wiki_platforms = {
+    'MediaWiki': {
+        'strengths': ['成熟稳定', '强大的模板系统', '完善的权限管理'],
+        'narrative_features': ['分类层级', '消歧义页', '重定向'],
+        'best_for': '大型协作世界观构建'
+    },
+    'DokuWiki': {
+        'strengths': ['轻量级', '无需数据库', '易于定制'],
+        'narrative_features': ['命名空间', '访问控制列表'],
+        'best_for': '中小型叙事项目'
+    },
+    'TiddlyWiki': {
+        'strengths': ['单文件部署', '高度可定制', '离线使用'],
+        'narrative_features': ['标签系统', '宏语言', '动态内容'],
+        'best_for': '个人知识叙事、实验性项目'
+    },
+    'Obsidian': {
+        'strengths': ['双向链接', '图谱视图', 'Markdown原生'],
+        'narrative_features': ['块引用', '动态嵌入', '本地存储'],
+        'best_for': '个人创作、小团队协作'
+    }
+}
 
 ### 条目关系网：超链接的叙事张力
 
@@ -467,6 +782,86 @@ class WikiNarrative:
             if v['diff']['additions'] > 1000:
                 story.append(f"{v['author']}贡献了重要扩展")
         return story
+    
+    def analyze_narrative_evolution(self):
+        """分析叙事如何随时间演变"""
+        evolution_patterns = {
+            'expansion': 0,  # 内容扩充
+            'revision': 0,   # 修订完善
+            'controversy': 0, # 争议编辑
+            'vandalism': 0   # 破坏性编辑
+        }
+        
+        for i in range(1, len(self.versions)):
+            prev = self.versions[i-1]
+            curr = self.versions[i]
+            
+            # 分析编辑模式
+            if curr['diff']['additions'] > curr['diff']['deletions'] * 2:
+                evolution_patterns['expansion'] += 1
+            elif abs(curr['diff']['additions'] - curr['diff']['deletions']) < 100:
+                evolution_patterns['revision'] += 1
+            elif '回退' in curr['summary'] or 'revert' in curr['summary'].lower():
+                evolution_patterns['vandalism'] += 1
+            elif self.detect_edit_war(i):
+                evolution_patterns['controversy'] += 1
+        
+        return evolution_patterns
+    
+    def detect_edit_war(self, current_index, window=5):
+        """检测编辑战"""
+        if current_index < window:
+            return False
+        
+        recent_authors = [v['author'] for v in self.versions[current_index-window:current_index]]
+        # 如果同样的作者反复编辑，可能是编辑战
+        author_counts = {}
+        for author in recent_authors:
+            author_counts[author] = author_counts.get(author, 0) + 1
+        
+        return max(author_counts.values()) >= 3
+```
+
+#### 版本历史的叙事应用
+
+**1. 真相的多重版本**
+
+在虚构世界的Wiki中，版本历史可以成为叙事的一部分：
+
+```mediawiki
+{{历史版本提示|
+本条目的历史版本反映了不同时期对事件的理解。
+* 版本1-15：官方记录版本
+* 版本16-23：揭密者添加的"真相"
+* 版本24+：综合多方观点的中立描述
+}}
+```
+
+**2. 时间胶囊效应**
+
+```python
+class TemporalNarrative:
+    def create_time_capsule(self, page, target_date):
+        """创建一个只在特定时间后才能查看的版本"""
+        encrypted_content = self.encrypt_with_time_lock(
+            page.content, 
+            target_date
+        )
+        
+        page.add_version(
+            timestamp=datetime.now(),
+            author='TimeKeeper',
+            content=f"[时间锁定内容，将在{target_date}后解锁]",
+            encrypted_data=encrypted_content
+        )
+    
+    def check_unlocked_content(self, page):
+        """检查是否有内容到期解锁"""
+        for version in page.versions:
+            if hasattr(version, 'encrypted_data'):
+                if self.can_decrypt(version.encrypted_data):
+                    return self.decrypt_content(version.encrypted_data)
+        return None
 ```
 
 ### 社区贡献：去中心化的世界观构建
