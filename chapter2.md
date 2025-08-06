@@ -28,6 +28,15 @@
 - **明确的因果链**：每个结局都可以追溯到特定的选择序列
 - **认知负担递增**：创作者需要维护的内容量呈几何级数增长
 
+#### 认知心理学视角
+
+从认知负荷理论来看，树状结构对应了人类的工作记忆限制。研究表明，人类同时只能有效处理7±2个信息单元。这解释了为什么大多数成功的分支叙事在每个节点提供2-4个选项。
+
+**决策疲劳**：过多的选择会导致读者产生"选择瘫痪"。Netflix的《黑镜：潘达斯奈基》通过以下策略缓解这个问题：
+- 提供默认选项（10秒倒计时）
+- 使用二元对立选择（谈论母亲 vs 不谈）
+- 在关键节点前设置缓冲内容
+
 #### 设计原则
 1. **有意义的选择**：每个分支点都应该代表真正影响故事走向的决定
    - 道德困境：拯救一个人还是多数人
@@ -65,6 +74,13 @@
                           [汇合点] --> [第二个选择]
 ```
 
+**设计价值**：
+- 建立共同的世界观和角色认知基础
+- 降低初期内容创作成本
+- 让玩家熟悉操作方式后再面临重要选择
+
+**实践案例**：《底特律：变人》前三章为线性教程，第四章才开始真正分支。
+
 2. **条件分支（Conditional Branching）**
 ```
 [场景X]
@@ -73,6 +89,11 @@
    |                    |
 [有钥匙：开门]    [无钥匙：寻找另一条路]
 ```
+
+**高级条件设计**：
+- **复合条件**：需要多个条件同时满足
+- **软条件**：影响难度而非可能性
+- **隐藏条件**：玩家不知道的判定因素
 
 3. **加权分支（Weighted Branching）**
 基于之前选择的累积影响：
@@ -85,6 +106,29 @@ def calculate_branch_availability(player_history):
         return ["邪恶结局", "中立结局"]
     else:
         return ["中立结局", "隐藏结局"]
+```
+
+**多维度权重系统**：
+```python
+class MultiDimensionalWeight:
+    def __init__(self):
+        self.dimensions = {
+            'morality': 0,      # -100 到 100
+            'rationality': 0,   # -100 到 100
+            'relationships': {}, # 角色名 -> 好感度
+            'knowledge': set()   # 已知信息集合
+        }
+    
+    def update_from_choice(self, choice):
+        self.dimensions['morality'] += choice.moral_impact
+        self.dimensions['rationality'] += choice.logic_impact
+        for char, impact in choice.relationship_impacts.items():
+            self.dimensions['relationships'][char] = \
+                self.dimensions['relationships'].get(char, 0) + impact
+        self.dimensions['knowledge'].update(choice.reveals)
+    
+    def get_available_branches(self, all_branches):
+        return [b for b in all_branches if b.check_requirements(self.dimensions)]
 ```
 
 #### 实际应用案例
@@ -109,6 +153,44 @@ def calculate_branch_availability(player_history):
 - **非线性时间**：可以实现时间跳跃和并行叙事
 - **涌现性叙事**：玩家路径的组合创造独特体验
 - **高重玩价值**：每次游玩都可能发现新内容
+
+#### 数学基础：图论在叙事设计中的应用
+
+网状叙事本质上是一个有向图G = (V, E)，其中：
+- V = {v₁, v₂, ..., vₙ} 是叙事节点集合
+- E ⊆ V × V 是转换边集合
+
+**关键度量**：
+```python
+import networkx as nx
+
+class NarrativeGraph:
+    def __init__(self):
+        self.graph = nx.DiGraph()
+    
+    def analyze_structure(self):
+        metrics = {
+            'density': nx.density(self.graph),  # 连接密度
+            'avg_degree': sum(dict(self.graph.degree()).values()) / len(self.graph),
+            'clustering': nx.average_clustering(self.graph.to_undirected()),
+            'critical_nodes': self.find_critical_nodes()
+        }
+        return metrics
+    
+    def find_critical_nodes(self):
+        # 寻找移除后会显著影响连通性的节点
+        critical = []
+        original_components = nx.number_strongly_connected_components(self.graph)
+        
+        for node in self.graph.nodes():
+            temp_graph = self.graph.copy()
+            temp_graph.remove_node(node)
+            new_components = nx.number_strongly_connected_components(temp_graph)
+            if new_components > original_components:
+                critical.append(node)
+        
+        return critical
+```
 
 #### 设计原则
 1. **节点独立性**：每个节点应该在不同上下文中都有意义
@@ -168,13 +250,17 @@ class NarrativeNode {
     this.connections = new Map(); // 目标节点ID -> 连接条件
     this.visitCount = 0;
     this.metadata = {};
+    this.contextualVariations = new Map(); // 基于进入路径的内容变化
+    this.semanticTags = new Set(); // 用于智能连接
   }
   
   addConnection(targetId, condition = null) {
     this.connections.set(targetId, {
       condition,
       weight: 1.0, // 用于推荐算法
-      type: 'default' // 主线、支线、隐藏等
+      type: 'default', // 主线、支线、隐藏等
+      bidirectional: false, // 是否双向连接
+      narrative_reason: '' // 连接的叙事逻辑说明
     });
   }
   
@@ -182,7 +268,33 @@ class NarrativeNode {
     return Array.from(this.connections.entries())
       .filter(([_, conn]) => 
         !conn.condition || conn.condition(playerState))
-      .map(([targetId, _]) => targetId);
+      .map(([targetId, conn]) => ({
+        targetId,
+        weight: this.calculateDynamicWeight(targetId, playerState, conn)
+      }))
+      .sort((a, b) => b.weight - a.weight);
+  }
+  
+  calculateDynamicWeight(targetId, playerState, connection) {
+    let weight = connection.weight;
+    
+    // 基于玩家偏好调整权重
+    if (playerState.preferences[connection.type] !== undefined) {
+      weight *= playerState.preferences[connection.type];
+    }
+    
+    // 降低重复访问的权重
+    const targetNode = this.parent.getNode(targetId);
+    if (targetNode && targetNode.visitCount > 0) {
+      weight *= Math.pow(0.7, targetNode.visitCount);
+    }
+    
+    // 提升未探索内容的权重
+    if (playerState.explorationBonus && targetNode.visitCount === 0) {
+      weight *= 1.5;
+    }
+    
+    return weight;
   }
 }
 
@@ -254,6 +366,23 @@ class NetworkNarrative {
 - **时间悖论**：可以探索因果循环和时间旅行主题
 - **元认知**：角色/读者意识到循环的存在
 - **螺旋上升**：表面重复，实质进步
+
+#### 哲学维度：尼采的永恒回归
+
+循环叙事深刻体现了尼采"永恒回归"的概念。每次循环不仅是时间的重复，更是存在意义的重新审视：
+
+```
+第一次循环：发现规律（认知层面）
+第二次循环：尝试改变（行动层面）
+第三次循环：接受限制（情感层面）
+第N次循环：超越循环（哲学层面）
+```
+
+**《土拨鼠之日》叙事弧线分析**：
+- 阶段1（循环1-10）：享乐主义 - 利用循环满足欲望
+- 阶段2（循环11-50）：虚无主义 - 意识到无意义
+- 阶段3（循环51-100）：利他主义 - 帮助他人寻找意义
+- 阶段4（循环100+）：自我实现 - 在限制中找到自由
 
 #### 设计原则
 1. **变化性**：每次循环应该有所不同
@@ -412,21 +541,79 @@ class LoopNarrative:
   - 场景状态：具体的叙事片段
   - 系统状态：游戏/故事的整体状况
   - 角色状态：人物的心理或物理状态
+  - 元状态：读者/玩家的认知状态
 
 - **转换（Transitions）**：从一个状态到另一个状态的条件
   - 玩家选择触发
   - 时间流逝触发
   - 条件满足触发
+  - 概率触发（随机事件）
 
 - **动作（Actions）**：状态转换时触发的事件
   - 更新游戏世界
   - 改变角色属性
   - 解锁新内容
+  - 触发音效/视觉效果
 
 - **守卫（Guards）**：控制转换是否可以发生的条件
   - 前置条件检查
   - 资源需求验证
   - 剧情逻辑约束
+  - 时序依赖检查
+
+#### 状态机的形式化定义
+
+一个叙事状态机可以形式化为七元组：
+**M = (S, Σ, δ, s₀, F, G, A)**
+
+其中：
+- S = 有限状态集合
+- Σ = 输入字母表（触发事件集合）
+- δ: S × Σ × G → S （状态转移函数）
+- s₀ ∈ S = 初始状态
+- F ⊆ S = 终止状态集合
+- G = 守卫条件集合
+- A = 动作集合
+
+**扩展：概率状态机**
+```python
+class ProbabilisticStateMachine:
+    def __init__(self):
+        self.states = {}
+        self.current_state = None
+        self.random_seed = None  # 用于可重现性
+        
+    def add_transition(self, from_state, to_states_with_prob, trigger):
+        """
+        to_states_with_prob: [(state, probability), ...]
+        probabilities must sum to 1.0
+        """
+        if from_state not in self.states:
+            self.states[from_state] = {}
+        
+        self.states[from_state][trigger] = to_states_with_prob
+    
+    def trigger(self, event):
+        if self.current_state not in self.states:
+            return False
+        
+        if event not in self.states[self.current_state]:
+            return False
+        
+        transitions = self.states[self.current_state][event]
+        
+        # 根据概率选择下一个状态
+        rand_val = random.random()
+        cumulative_prob = 0
+        
+        for next_state, prob in transitions:
+            cumulative_prob += prob
+            if rand_val <= cumulative_prob:
+                self.transition_to(next_state)
+                return True
+        
+        return False
+```
 
 #### 状态机的数学模型
 
@@ -603,6 +790,8 @@ class HistoryState(NarrativeState):
 2. **发现孤岛**：无法到达或离开的节点
 3. **评估复杂度**：通过节点和边的数量
 4. **优化路径**：简化或丰富特定路线
+5. **分析玩家行为**：热图显示最常访问的路径
+6. **预测叙事流**：使用马尔可夫链分析
 
 #### 度量指标
 
@@ -610,6 +799,151 @@ class HistoryState(NarrativeState):
 - **分支因子**：平均每个节点的出边数
 - **深度**：最长路径的长度
 - **连通性**：节点间的平均距离
+- **中心性**：识别叙事中的关键节点
+- **模块性**：子图的独立程度
+
+#### 高级分析技术
+
+**1. 叙事熵（Narrative Entropy）**
+衡量故事的不确定性和信息量：
+```python
+import math
+from collections import Counter
+
+def calculate_narrative_entropy(paths):
+    """计算玩家选择路径的熵值"""
+    path_counts = Counter(paths)
+    total = sum(path_counts.values())
+    
+    entropy = 0
+    for count in path_counts.values():
+        if count > 0:
+            p = count / total
+            entropy -= p * math.log2(p)
+    
+    return entropy
+
+def analyze_choice_distribution(state_machine, num_simulations=10000):
+    """模拟玩家选择，分析选择分布"""
+    outcomes = []
+    
+    for _ in range(num_simulations):
+        path = state_machine.simulate_random_playthrough()
+        outcomes.append(path[-1])  # 记录结局
+    
+    entropy = calculate_narrative_entropy(outcomes)
+    return {
+        'entropy': entropy,
+        'max_entropy': math.log2(len(set(outcomes))),
+        'normalized_entropy': entropy / math.log2(len(set(outcomes))),
+        'outcome_distribution': Counter(outcomes)
+    }
+```
+
+**2. 关键路径分析（Critical Path Analysis）**
+```python
+class NarrativeCriticalPath:
+    def __init__(self, graph):
+        self.graph = graph
+    
+    def find_all_paths(self, start, end, path=[]):
+        path = path + [start]
+        if start == end:
+            return [path]
+        
+        paths = []
+        for node in self.graph[start]:
+            if node not in path:  # 避免循环
+                newpaths = self.find_all_paths(node, end, path)
+                paths.extend(newpaths)
+        return paths
+    
+    def analyze_critical_nodes(self, start, end):
+        all_paths = self.find_all_paths(start, end)
+        node_frequency = {}
+        
+        for path in all_paths:
+            for node in path:
+                node_frequency[node] = node_frequency.get(node, 0) + 1
+        
+        # 识别必经节点
+        critical_nodes = [
+            node for node, freq in node_frequency.items()
+            if freq == len(all_paths)
+        ]
+        
+        return {
+            'critical_nodes': critical_nodes,
+            'node_importance': {
+                node: freq / len(all_paths)
+                for node, freq in node_frequency.items()
+            }
+        }
+```
+
+**3. 叙事流模拟（Narrative Flow Simulation）**
+```python
+import numpy as np
+
+class MarkovNarrative:
+    def __init__(self, transition_matrix, states):
+        self.P = np.array(transition_matrix)
+        self.states = states
+        self.state_to_idx = {s: i for i, s in enumerate(states)}
+    
+    def steady_state_distribution(self):
+        """计算稳态分布，预测长期访问模式"""
+        eigenvalues, eigenvectors = np.linalg.eig(self.P.T)
+        stationary = eigenvectors[:, np.argmax(eigenvalues)]
+        stationary = stationary / stationary.sum()
+        return dict(zip(self.states, stationary.real))
+    
+    def expected_visits(self, start_state, num_steps=100):
+        """预测从起始状态开始，各状态的期望访问次数"""
+        current = np.zeros(len(self.states))
+        current[self.state_to_idx[start_state]] = 1
+        
+        visit_counts = np.zeros(len(self.states))
+        
+        for _ in range(num_steps):
+            visit_counts += current
+            current = current @ self.P
+        
+        return dict(zip(self.states, visit_counts))
+```
+
+#### 可视化最佳实践
+
+**1. 布局算法选择**
+- **层次布局**：适合树状结构
+- **力导向布局**：适合网状结构
+- **圆形布局**：适合循环结构
+- **Sugiyama算法**：最小化边交叉
+
+**2. 视觉编码原则**
+```python
+def generate_node_style(node, metrics):
+    """根据节点重要性生成视觉样式"""
+    importance = metrics.get('importance', 0.5)
+    visit_frequency = metrics.get('visits', 0)
+    
+    return {
+        'size': 20 + importance * 30,  # 节点大小
+        'color': plt.cm.viridis(visit_frequency),  # 颜色映射访问频率
+        'border_width': 2 if node.is_critical else 1,
+        'shape': 'diamond' if node.is_ending else 'circle'
+    }
+
+def generate_edge_style(edge, flow_data):
+    """根据流量数据生成边样式"""
+    flow = flow_data.get(edge, 0)
+    
+    return {
+        'width': 1 + math.log(1 + flow),  # 宽度映射流量
+        'alpha': 0.3 + 0.7 * flow / max(flow_data.values()),
+        'style': 'dashed' if edge.is_optional else 'solid'
+    }
+```
 
 ## 2.3 案例研究
 
@@ -620,30 +954,105 @@ class HistoryState(NarrativeState):
 - **核心机制**：主角被困在同一天，每次循环都会保留部分记忆
 - **状态累积**：通过多次循环解锁新的对话选项和行动路径
 - **情感递进**：从困惑到绝望，再到接受和超越
+- **元叙事层次**：玩家逐渐意识到自己也被困在游戏循环中
+
+#### 设计哲学
+
+**1. 记忆作为货币**
+在传统游戏中，玩家收集金币或经验值。在《无尽的负担》中，记忆片段成为核心"货币"：
+- 痛苦记忆：解锁悲伤路线
+- 温暖记忆：解锁救赎路线
+- 矛盾记忆：解锁真相路线
+
+**2. 情感状态机**
+```
+[困惑] --重复3次--> [焦虑] --重复5次--> [愤怒]
+   |                    |                    |
+   +--发现线索-->[好奇]  +--尝试改变-->[希望] +--失败-->[绝望]
+                   |                    |                |
+                   +--------发现真相----+------接受------>[超脱]
+```
 
 #### 技术实现
 ```javascript
 class TimeLoopNarrative {
   constructor() {
-    this.currentDay = 1;
+    this.currentLoop = 1;
     this.memories = new Set();
+    this.emotionalState = 'confused';
     this.unlockedPaths = new Set();
+    this.keyEvents = new Map(); // 事件ID -> 发生次数
   }
   
-  endDay(choices) {
-    // 保存关键记忆
-    choices.filter(c => c.isSignificant)
-           .forEach(c => this.memories.add(c.id));
+  processMemory(memory) {
+    this.memories.add(memory.id);
     
-    // 检查是否解锁新路径
-    this.checkUnlocks();
+    // 记忆组合解锁新认知
+    const combinations = [
+      {required: ['mother_photo', 'diary_entry'], unlocks: 'family_truth'},
+      {required: ['clock_stopped', 'calendar_loop'], unlocks: 'time_anomaly'},
+      {required: ['mirror_crack', 'shadow_self'], unlocks: 'identity_crisis'}
+    ];
     
-    // 重置日期，保留记忆
-    this.currentDay++;
-    return this.startNewDay();
+    combinations.forEach(combo => {
+      if (combo.required.every(m => this.memories.has(m))) {
+        this.unlockRevealation(combo.unlocks);
+      }
+    });
+  }
+  
+  updateEmotionalState() {
+    const rules = {
+      confused: {
+        condition: () => this.currentLoop <= 3,
+        next: 'anxious'
+      },
+      anxious: {
+        condition: () => this.memories.size > 5 && this.currentLoop > 3,
+        next: 'angry'
+      },
+      angry: {
+        condition: () => this.keyEvents.get('confrontation') > 2,
+        next: 'desperate'
+      },
+      desperate: {
+        condition: () => this.memories.has('acceptance_key'),
+        next: 'transcendent'
+      }
+    };
+    
+    const currentRule = rules[this.emotionalState];
+    if (currentRule && currentRule.condition()) {
+      this.transitionEmotion(currentRule.next);
+    }
+  }
+  
+  generateDayContent() {
+    const baseEvents = this.getBaseEvents();
+    const variations = this.getEmotionalVariations(baseEvents);
+    const newOpportunities = this.getUnlockedOpportunities();
+    
+    return this.weaveNarrative(variations, newOpportunities);
   }
 }
 ```
+
+#### 叙事层次分析
+
+**表层循环**：物理时间的重复
+- 每天6:00 AM 醒来
+- 固定的环境和NPC行为
+- 11:59 PM 强制重置
+
+**中层循环**：心理状态的演变
+- 对话选项随情绪变化
+- NPC反应随玩家知识变化
+- 环境细节随觉察提升显现
+
+**深层循环**：哲学主题的探索
+- 自由意志 vs 决定论
+- 记忆与身份的关系
+- 循环中寻找意义
 
 ### 2.3.2 《时间迷宫》（Temporal Maze）
 
@@ -661,24 +1070,170 @@ class TimeLoopNarrative {
 ## 2.4 实践：构建你的第一个非线性叙事
 
 ### 步骤1：概念设计
-1. 确定核心主题和情感弧线
-2. 选择适合的结构类型
-3. 设计3-5个关键决策点
+1. **确定核心主题和情感弧线**
+   - 主题示例：身份认同、道德选择、时间与记忆
+   - 情感弧线：建立期待 → 打破常规 → 深化理解 → 情感升华
+   - 问自己：什么样的体验只能通过非线性叙事实现？
+
+2. **选择适合的结构类型**
+   ```
+   树状结构 → 适合：道德困境、策略选择
+   网状结构 → 适合：探索发现、拼图解谜
+   循环结构 → 适合：成长主题、哲学思辨
+   ```
+
+3. **设计3-5个关键决策点**
+   - 每个决策应该揭示角色性格
+   - 避免"明显正确"的选择
+   - 确保选择的后果有意义且持久
 
 ### 步骤2：状态图绘制
-1. 使用工具（如draw.io、yEd）创建可视化图表
-2. 标注每个节点的内容概要
-3. 定义转换条件
+
+**推荐工具对比**：
+| 工具 | 优势 | 适用场景 |
+|------|------|----------|
+| draw.io | 免费、功能全面 | 复杂状态机设计 |
+| yEd | 自动布局算法强大 | 大规模叙事图 |
+| Miro/Mural | 协作功能优秀 | 团队头脑风暴 |
+| GraphViz | 文本定义、版本控制友好 | 程序化生成 |
+
+**绘制规范**：
+```dot
+digraph NarrativeFlow {
+    // 节点样式定义
+    node [shape=box, style=rounded]
+    
+    // 起始节点
+    start [label="醒来\n[循环计数:0]", shape=ellipse]
+    
+    // 状态节点
+    kitchen [label="厨房\n[可获得:刀]"]
+    bedroom [label="卧室\n[可获得:日记]"]
+    
+    // 选择节点
+    choice1 [label="选择", shape=diamond]
+    
+    // 结局节点
+    ending1 [label="结局:觉醒", shape=doubleoctagon]
+    
+    // 边定义（带条件）
+    start -> choice1
+    choice1 -> kitchen [label="左转"]
+    choice1 -> bedroom [label="右转"]
+    kitchen -> ending1 [label="if has_diary"]
+}
+```
 
 ### 步骤3：原型实现
-1. 选择合适的工具（Twine、Ink等）
-2. 实现核心路径
-3. 逐步添加分支内容
+
+**工具选择决策树**：
+```
+你的技术水平？
+├─ 非程序员
+│  ├─ 需要复杂分支？
+│  │  ├─ 是 → Twine (Harlowe/SugarCube)
+│  │  └─ 否 → Google Forms + Sheets
+│  └─ 需要视觉效果？
+│     ├─ 是 → Ren'Py
+│     └─ 否 → Ink + Inky
+└─ 程序员
+   ├─ 偏好语言？
+   │  ├─ JavaScript → 自建 + React
+   │  ├─ C# → Unity + Ink
+   │  └─ Python → Ren'Py 或自建
+   └─ 需要3D/VR？
+      ├─ 是 → Unity/Unreal
+      └─ 否 → Web技术栈
+```
+
+**Twine快速入门示例**：
+```twee
+:: 开始
+你在一个陌生的房间醒来。墙上的时钟显示3:33。
+
+[[检查门]] | [[查看窗户]]
+
+:: 检查门
+门把手冰冷，转动时发出嘎吱声。
+(if: $hasKey is true)[
+  [[用钥匙开门->自由]]
+](else:)[
+  门锁着。也许房间里有钥匙？
+  [[返回->开始]]
+]
+
+:: 查看窗户
+窗外一片漆黑，但你注意到窗台上有什么在闪光。
+(set: $hasKey to true)
+你找到了一把钥匙！
+
+[[返回->开始]]
+```
 
 ### 步骤4：测试与迭代
-1. 自我测试所有路径
-2. 收集用户反馈
-3. 优化结构和内容
+
+**测试清单**：
+- [ ] **完整性测试**：每条路径都能到达某个结局
+- [ ] **一致性测试**：状态变化逻辑无矛盾
+- [ ] **边界测试**：极端选择组合的处理
+- [ ] **情感测试**：预期情感曲线是否实现
+- [ ] **认知负荷测试**：信息量是否适中
+
+**用户测试方法**：
+1. **思维发声法**：让测试者边玩边说出想法
+2. **路径追踪**：记录每个测试者的选择序列
+3. **情感标记**：在关键点让测试者标记情感状态
+4. **回顾访谈**：完成后深入了解体验
+
+**数据分析模板**：
+```python
+def analyze_playtest_data(sessions):
+    results = {
+        'completion_rate': 0,
+        'avg_duration': 0,
+        'path_distribution': {},
+        'abandonment_points': [],
+        'emotional_peaks': []
+    }
+    
+    for session in sessions:
+        # 完成率分析
+        if session.completed:
+            results['completion_rate'] += 1
+        else:
+            results['abandonment_points'].append(
+                session.last_node
+            )
+        
+        # 路径分析
+        path_key = '->'.join(session.major_choices)
+        results['path_distribution'][path_key] = \
+            results['path_distribution'].get(path_key, 0) + 1
+        
+        # 情感曲线分析
+        peak = max(session.emotion_ratings, 
+                  key=lambda x: abs(x.intensity))
+        results['emotional_peaks'].append(peak)
+    
+    return results
+```
+
+### 实践项目：《记忆碎片》
+
+创建一个10分钟的非线性叙事原型：
+
+**设定**：你是一个失忆的AI，通过访问不同的数据库片段重建自己的身份。
+
+**结构**：网状 + 轻度循环
+- 5个核心记忆节点
+- 每个节点可多次访问，内容会变化
+- 访问顺序影响最终理解
+
+**实现里程碑**：
+1. **第一周**：完成状态图和核心机制
+2. **第二周**：实现3个核心节点
+3. **第三周**：添加剩余节点和连接逻辑
+4. **第四周**：测试、打磨、发布
 
 ## 本章小结
 
