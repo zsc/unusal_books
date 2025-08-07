@@ -698,10 +698,10 @@ class ParameterizedNarrativePage:
     {% if reader.first_encounter %}
       &lt;!-- 初次遇见的描述 --&gt;
       &lt;p&gt;一个神秘的身影出现在你面前...&lt;/p&gt;
-    {% elif reader.relationship_level &gt; 80 %}
+    {% elsif reader.relationship_level &gt; 80 %}
       &lt;!-- 亲密关系的描述 --&gt;
       &lt;p&gt;你最信任的伙伴，{{ character.name }}...&lt;/p&gt;
-    {% elif reader.is_enemy %}
+    {% elsif reader.is_enemy %}
       &lt;!-- 敌对关系的描述 --&gt;
       &lt;p&gt;你的宿敌{{ character.name }}冷冷地注视着你...&lt;/p&gt;
     {% else %}
