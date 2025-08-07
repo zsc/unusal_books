@@ -1239,6 +1239,7 @@ class ChoicePresentation {
     };
   }
 }
+```
 
 ### 2.6 高级演出技巧
 

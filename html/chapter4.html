@@ -1242,15 +1242,12 @@ const emotionToEffect = {
     };
   }
 }
+</code></pre>
 
-### 2.6 高级演出技巧
-
-#### 镜头语言的数字化转译
-
-虽然视觉小说是静态为主的媒介，但可以模拟电影的镜头语言：
-
-```javascript
-class CameraEffects {
+<h3 id="26">2.6 高级演出技巧</h3>
+<h4 id="_34">镜头语言的数字化转译</h4>
+<p>虽然视觉小说是静态为主的媒介，但可以模拟电影的镜头语言：</p>
+<pre class="codehilite"><code class="language-javascript">class CameraEffects {
   constructor(scene) {
     this.scene = scene;
     this.camera = {
@@ -1318,7 +1315,7 @@ class CameraEffects {
 }
 </code></pre>
 
-<h4 id="_34">时间操纵技术</h4>
+<h4 id="_35">时间操纵技术</h4>
 <p>视觉小说可以自由操纵时间流动：</p>
 <pre class="codehilite"><code class="language-javascript">class TimeManipulation {
   constructor() {
@@ -1380,7 +1377,7 @@ class CameraEffects {
 </code></pre>
 
 <h3 id="27">2.7 情感渲染系统</h3>
-<h4 id="_35">内心独白的视觉化</h4>
+<h4 id="_36">内心独白的视觉化</h4>
 <p>将角色的内心世界外化为视觉元素：</p>
 <pre class="codehilite"><code class="language-javascript">class InnerWorldVisualization {
   constructor(character) {
@@ -1447,7 +1444,7 @@ class CameraEffects {
 }
 </code></pre>
 
-<h4 id="_36">共感觉设计</h4>
+<h4 id="_37">共感觉设计</h4>
 <p>将不同感官体验转化为视觉表现：</p>
 <pre class="codehilite"><code class="language-javascript">const synesthesiaDesign = {
   // 声音的视觉化
@@ -1507,7 +1504,7 @@ class CameraEffects {
 </code></pre>
 
 <h3 id="28">2.8 动态构图系统</h3>
-<h4 id="_37">情境响应式构图</h4>
+<h4 id="_38">情境响应式构图</h4>
 <p>根据叙事情境自动调整构图：</p>
 <pre class="codehilite"><code class="language-javascript">class DynamicComposition {
   constructor() {
@@ -1585,7 +1582,7 @@ class CameraEffects {
 </code></pre>
 
 <h3 id="29">2.9 界面语言的叙事整合</h3>
-<h4 id="_38">对话框的表现力扩展</h4>
+<h4 id="_39">对话框的表现力扩展</h4>
 <p>对话框不仅是文字容器，更是表达工具：</p>
 <pre class="codehilite"><code class="language-javascript">class ExpressiveDialogueBox {
   constructor() {
@@ -1713,7 +1710,7 @@ class CameraEffects {
 </code></pre>
 
 <h3 id="210">2.10 音画联动机制</h3>
-<h4 id="_39">视觉与声音的精确同步</h4>
+<h4 id="_40">视觉与声音的精确同步</h4>
 <pre class="codehilite"><code class="language-javascript">class AudioVisualSync {
   constructor() {
     this.syncPoints = [];
@@ -1788,7 +1785,7 @@ class CameraEffects {
 </code></pre>
 
 <h3 id="211">2.11 高级界面效果</h3>
-<h4 id="_40">打破第四面墙</h4>
+<h4 id="_41">打破第四面墙</h4>
 <pre class="codehilite"><code class="language-javascript">class FourthWallBreaking {
   constructor() {
     this.techniques = {
@@ -1839,7 +1836,7 @@ class CameraEffects {
 </code></pre>
 
 <h3 id="212">2.12 视觉小说的节奏控制</h3>
-<h4 id="_41">微观节奏：场景内的时间掌控</h4>
+<h4 id="_42">微观节奏：场景内的时间掌控</h4>
 <pre class="codehilite"><code class="language-javascript">class MicroRhythm {
   constructor() {
     this.pacing = {
@@ -1900,7 +1897,7 @@ class CameraEffects {
 }
 </code></pre>
 
-<h4 id="_42">宏观节奏：章节间的起承转合</h4>
+<h4 id="_43">宏观节奏：章节间的起承转合</h4>
 <pre class="codehilite"><code class="language-javascript">class MacroRhythm {
   constructor() {
     this.chapterStructure = {
@@ -2093,19 +2090,19 @@ class DynamicMusic {
 <h2 id="6">6. 技术实现方案</h2>
 <h3 id="61">6.1 工具链选择</h3>
 <p>根据项目需求选择合适的技术栈：</p>
-<h4 id="_43">轻量级方案</h4>
+<h4 id="_44">轻量级方案</h4>
 <ul>
 <li><strong>Twine + CSS动画</strong>：适合简单的视觉效果</li>
 <li><strong>Markdown + reveal.js</strong>：适合演示型叙事</li>
 <li><strong>HTML + CSS + vanilla JS</strong>：完全控制，适合定制</li>
 </ul>
-<h4 id="_44">视觉小说引擎</h4>
+<h4 id="_45">视觉小说引擎</h4>
 <ul>
 <li><strong>Ren'Py</strong>：Python基础，功能强大，社区活跃</li>
 <li><strong>Novel.js</strong>：Web原生，易于部署</li>
 <li><strong>Fungus (Unity)</strong>：适合3D视觉小说</li>
 </ul>
-<h4 id="_45">高级框架</h4>
+<h4 id="_46">高级框架</h4>
 <ul>
 <li><strong>React + Framer Motion</strong>：组件化开发，丰富动画</li>
 <li><strong>Vue + GSAP</strong>：响应式设计，专业动画库</li>
@@ -2360,7 +2357,7 @@ class DynamicWeather {
 <li><strong>手势识别</strong>：手势控制视觉元素</li>
 <li><strong>情绪识别</strong>：根据用户表情调整氛围</li>
 </ul>
-<h2 id="_46">🏋️ 练习题</h2>
+<h2 id="_47">🏋️ 练习题</h2>
 <h3 id="41_1">练习 4.1：视觉节奏设计 [基础]</h3>
 <p>为一个"告白场景"设计视觉节奏。场景包含：</p>
 <ul>
@@ -3842,8 +3839,8 @@ loader.loadOptional(); // 背景加载
 &lt;/button&gt;
 </code></pre>
 
-<h2 id="_47">✅ 最佳实践检查清单</h2>
-<h3 id="_48">视觉设计检查</h3>
+<h2 id="_48">✅ 最佳实践检查清单</h2>
+<h3 id="_49">视觉设计检查</h3>
 <ul>
 <li>[ ] <strong>视觉层级清晰</strong></li>
 <li>主要元素突出</li>
@@ -3866,7 +3863,7 @@ loader.loadOptional(); // 背景加载
 <li>提供动画开关选项</li>
 <li>避免过度动效</li>
 </ul>
-<h3 id="_49">性能优化检查</h3>
+<h3 id="_50">性能优化检查</h3>
 <ul>
 <li>[ ] <strong>资源优化</strong></li>
 <li>图片格式选择合适（WebP/AVIF）</li>
@@ -3889,7 +3886,7 @@ loader.loadOptional(); // 背景加载
 <li>避免内存泄漏</li>
 <li>监控内存使用</li>
 </ul>
-<h3 id="_50">用户体验检查</h3>
+<h3 id="_51">用户体验检查</h3>
 <ul>
 <li>[ ] <strong>响应式设计</strong></li>
 <li>支持主流屏幕尺寸</li>
@@ -3912,7 +3909,7 @@ loader.loadOptional(); // 背景加载
 <li>可以轻松返回</li>
 <li>进度指示明确</li>
 </ul>
-<h3 id="_51">可访问性检查</h3>
+<h3 id="_52">可访问性检查</h3>
 <ul>
 <li>[ ] <strong>视觉无障碍</strong></li>
 <li>提供文字替代</li>
@@ -3935,7 +3932,7 @@ loader.loadOptional(); // 背景加载
 <li>时间限制可调</li>
 <li>提供快捷键</li>
 </ul>
-<h3 id="_52">技术实现检查</h3>
+<h3 id="_53">技术实现检查</h3>
 <ul>
 <li>[ ] <strong>跨浏览器兼容</strong></li>
 <li>主流浏览器测试</li>
@@ -3958,9 +3955,9 @@ loader.loadOptional(); // 背景加载
 <li>错误上报机制</li>
 <li>A/B测试准备</li>
 </ul>
-<h2 id="_53">📚 本章小结</h2>
+<h2 id="_54">📚 本章小结</h2>
 <p>视觉与多媒体叙事开启了超越纯文字的表达维度。通过本章学习，我们探索了：</p>
-<h3 id="_54">核心概念回顾</h3>
+<h3 id="_55">核心概念回顾</h3>
 <ol>
 <li>
 <p><strong>视觉叙事的认知基础</strong>
@@ -3987,7 +3984,7 @@ loader.loadOptional(); // 背景加载
    - 跨平台适配方案</p>
 </li>
 </ol>
-<h3 id="_55">关键技术要点</h3>
+<h3 id="_56">关键技术要点</h3>
 <pre class="codehilite"><code class="language-javascript">// 视觉叙事的核心架构
 const visualNarrative = {
   // 静态层
@@ -4013,14 +4010,14 @@ const visualNarrative = {
 };
 </code></pre>
 
-<h3 id="_56">创作原则总结</h3>
+<h3 id="_57">创作原则总结</h3>
 <ol>
 <li><strong>少即是多</strong>：精心选择的视觉元素胜过堆砌</li>
 <li><strong>情感优先</strong>：技术服务于情感表达，而非炫技</li>
 <li><strong>用户中心</strong>：始终考虑不同用户的需求和限制</li>
 <li><strong>持续迭代</strong>：基于数据和反馈不断优化</li>
 </ol>
-<h3 id="_57">未来展望</h3>
+<h3 id="_58">未来展望</h3>
 <p>视觉叙事的边界还在不断扩展：</p>
 <ul>
 <li>AR/VR带来的空间叙事革命</li>
