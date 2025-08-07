@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Untitled</title>
+    <link rel="stylesheet" href="./assets/style.css">
+    <link rel="stylesheet" href="./assets/highlight.css">
+    <script src="./assets/script.js" defer></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$']],
+                displayMath: [['$$', '$$']],
+                processEscapes: false,
+                packages: {'[+]': ['noerrors', 'ams']}
+            },
+            options: {
+                ignoreHtmlClass: 'tex2jax_ignore',
+                processHtmlClass: 'tex2jax_process'
+            },
+            loader: {
+                load: ['[tex]/noerrors', '[tex]/ams']
+            }
+        };
+    </script>
+</head>
+<body>
+    <div class="container">
+        <nav id="sidebar" class="sidebar">
+            <div class="sidebar-header">
+                <h3>目录</h3>
+                <button id="sidebar-toggle" class="sidebar-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+            <ul class="nav-list"><li class=""><a href="./index.html">非传统书创作完全指南</a></li><li class=""><a href="./chapter1.html">第1章：非传统书的定义与演化</a></li><li class=""><a href="./chapter2.html">第2章：非线性叙事架构</a></li><li class=""><a href="./chapter3.html">第3章：数据库叙事与知识图谱</a></li><li class=""><a href="./chapter4.html">第4章：视觉与多媒体叙事</a></li><li class=""><a href="./chapter5.html">第5章：游戏机制与叙事融合</a></li><li class=""><a href="./chapter6.html">第6章：AI协作与生成式创作</a></li><li class=""><a href="./chapter7.html">第7章：技术实现与工具链</a></li><li class=""><a href="./chapter8.html">第8章：发布、迭代与社区</a></li><li class=""><a href="./chapter9.html">第9章：实验与未来</a></li><li class="active"><a href="./CLAUDE.html">Untitled</a></li></ul>
+        </nav>
+        
+        <main class="content">
+            <article>
+                <p>（交流可以用英文，本文档中文，保留这句）</p>
+<h2 id="_1">项目目标</h2>
+<p>编写一份怎么进行非传统书创作的中文教程markdown，要包含大量的习题和参考答案（答案默认折叠）。
+非传统书指：非线性小说、字典/wikipedia、展示某一主题的互动网站、图文轻小说、游戏式小说等
+文件组织是 index.md + chapter1.md + ...</p>
+<h2 id="audience">Audience</h2>
+<p>verteran programmer and AI scientists</p>
+<h2 id="_2">章节结构要求</h2>
+<p>每个章节应包含：</p>
+<ol>
+<li><strong>开篇段落</strong>：简要介绍本章内容和学习目标</li>
+<li><strong>本章小结</strong>：总结关键概念和公式</li>
+<li><strong>练习题</strong>：
+   - 每章包含6-8道练习题
+   - 50%基础题（帮助熟悉材料）
+   - 50%挑战题（包括开放性思考题）
+   - 每题提供提示（Hint）
+   - 答案默认折叠，不包含代码</li>
+<li><strong>常见陷阱与错误</strong> (Gotchas)：每章包含该主题的常见错误和调试技巧</li>
+<li><strong>最佳实践检查清单</strong>：每章末尾提供设计审查要点</li>
+</ol>
+            </article>
+            
+            <nav class="page-nav"><a href="./chapter9.html" class="nav-link prev">← 第9章：实验与未来</a></nav>
+        </main>
+    </div>
+</body>
+</html>
