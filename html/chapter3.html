@@ -2797,29 +2797,51 @@ ORDER BY match_score DESC;
         'best_for': '个人创作、小团队协作'
     }
 }
+</code></pre>
 
-### 条目关系网：超链接的叙事张力
-
-在Wiki叙事中，超链接不仅是导航工具，更是叙事设备：
-
-**链接类型与叙事功能：**
-
-| 链接类型 | 叙事作用 | 示例 |
-
-| 链接类型 | 叙事作用 | 示例 |
-|---------|---------|------|
-| 定义链接 | 世界观构建 | [[魔法体系]] → 解释运行规则 |
-| 因果链接 | 情节推进 | [[大灾变]] → [[英雄崛起]] |
-| 并列链接 | 视角扩展 | 同一事件的[[官方记录]]与[[民间传说]] |
-| 时序链接 | 历史脉络 | [[第一纪元]] → [[第二纪元]] |
-| 矛盾链接 | 叙事张力 | [[预言]]与[[实际结局]]的冲突 |
-
-### 版本历史：时间维度的多重叙事
-
-Wiki的版本控制系统创造了独特的&quot;叙事考古学&quot;：
-
-```python
-class WikiNarrative:
+<h3 id="_48">条目关系网：超链接的叙事张力</h3>
+<p>在Wiki叙事中，超链接不仅是导航工具，更是叙事设备：</p>
+<p><strong>链接类型与叙事功能：</strong></p>
+<p>| 链接类型 | 叙事作用 | 示例 |</p>
+<table>
+<thead>
+<tr>
+<th>链接类型</th>
+<th>叙事作用</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>定义链接</td>
+<td>世界观构建</td>
+<td>[[魔法体系]] → 解释运行规则</td>
+</tr>
+<tr>
+<td>因果链接</td>
+<td>情节推进</td>
+<td>[[大灾变]] → [[英雄崛起]]</td>
+</tr>
+<tr>
+<td>并列链接</td>
+<td>视角扩展</td>
+<td>同一事件的[[官方记录]]与[[民间传说]]</td>
+</tr>
+<tr>
+<td>时序链接</td>
+<td>历史脉络</td>
+<td>[[第一纪元]] → [[第二纪元]]</td>
+</tr>
+<tr>
+<td>矛盾链接</td>
+<td>叙事张力</td>
+<td>[[预言]]与[[实际结局]]的冲突</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_49">版本历史：时间维度的多重叙事</h3>
+<p>Wiki的版本控制系统创造了独特的"叙事考古学"：</p>
+<pre class="codehilite"><code class="language-python">class WikiNarrative:
     def __init__(self, page_title):
         self.title = page_title
         self.versions = []
@@ -2883,7 +2905,7 @@ class WikiNarrative:
         return max(author_counts.values()) &gt;= 3
 </code></pre>
 
-<h4 id="_48">版本历史的叙事应用</h4>
+<h4 id="_50">版本历史的叙事应用</h4>
 <ol>
 <li><strong>真相的多重版本</strong></li>
 </ol>
@@ -2924,7 +2946,7 @@ class WikiNarrative:
         return None
 </code></pre>
 
-<h3 id="_49">社区贡献：去中心化的世界观构建</h3>
+<h3 id="_51">社区贡献：去中心化的世界观构建</h3>
 <p>成功的Wiki叙事需要精心设计的社区机制：</p>
 <ol>
 <li><strong>贡献者角色系统</strong></li>
@@ -2977,7 +2999,7 @@ class WikiNarrative:
 }}
 </code></pre>
 
-<h3 id="_50">协作冲突与叙事深度</h3>
+<h3 id="_52">协作冲突与叙事深度</h3>
 <p>Wiki的编辑战（Edit Wars）反而能产生叙事深度。当不同的贡献者对同一事件有不同解释时，这种"冲突"本身就成为了叙事的一部分。</p>
 <p><strong>案例研究：SCP基金会的"多重Canon"系统</strong></p>
 <p>SCP基金会是这种协作冲突转化为叙事深度的典范：</p>
@@ -3011,7 +3033,7 @@ class WikiNarrative:
     - &quot;真正的SCP-001可能还未被提出&quot;
 </code></pre>
 
-<h4 id="_51">冲突管理机制</h4>
+<h4 id="_53">冲突管理机制</h4>
 <ol>
 <li><strong>讨论页作为元叙事空间</strong></li>
 </ol>
@@ -3345,7 +3367,7 @@ contract DecentralizedWikiNarrative {
 </code></pre>
 
 <h2 id="33_1">3.3 知识图谱：实体关系驱动的叙事架构</h2>
-<h3 id="_52">从关系数据库到知识图谱</h3>
+<h3 id="_54">从关系数据库到知识图谱</h3>
 <p>知识图谱将叙事推向了语义层面。不同于关系数据库的表格结构，知识图谱直接表达实体间的语义关系：</p>
 <pre class="codehilite"><code>关系数据库思维：
 人物表 ←外键→ 事件表 ←外键→ 地点表
@@ -3358,7 +3380,7 @@ contract DecentralizedWikiNarrative {
 (人物)      (事件)      (地点)
 </code></pre>
 
-<h4 id="_53">为什么选择知识图谱？</h4>
+<h4 id="_55">为什么选择知识图谱？</h4>
 <p>知识图谱相比传统数据库在叙事构建上有独特优势：</p>
 <ol>
 <li><strong>灵活性</strong>：无需预定义严格的表结构，可以随时添加新的关系类型</li>
@@ -3366,7 +3388,7 @@ contract DecentralizedWikiNarrative {
 <li><strong>推理能力</strong>：基于规则自动推导隐含关系</li>
 <li><strong>可解释性</strong>：每个查询路径都是一个可读的故事线</li>
 </ol>
-<h3 id="_54">三元组：叙事的原子单位</h3>
+<h3 id="_56">三元组：叙事的原子单位</h3>
 <p>知识图谱的基础是RDF三元组（主语-谓语-宾语）：</p>
 <pre class="codehilite"><code class="language-turtle"># 基础叙事三元组
 :哈利波特 :打败了 :伏地魔 .
@@ -3381,7 +3403,7 @@ contract DecentralizedWikiNarrative {
 :老魔杖 :属于 :打败其主人者 .
 </code></pre>
 
-<h4 id="_55">三元组的叙事力量</h4>
+<h4 id="_57">三元组的叙事力量</h4>
 <p>每个三元组都是一个最小的叙事单元。通过组合，它们能够表达：</p>
 <ul>
 <li><strong>因果链</strong>：A导致B，B导致C，因此A间接导致C</li>
@@ -3389,7 +3411,7 @@ contract DecentralizedWikiNarrative {
 <li><strong>时间演变</strong>：关系的产生、发展和消亡</li>
 <li><strong>视角差异</strong>：同一事件的多重解读</li>
 </ul>
-<h3 id="_56">本体设计：定义叙事宇宙的规则</h3>
+<h3 id="_58">本体设计：定义叙事宇宙的规则</h3>
 <p>本体（Ontology）是知识图谱的"宪法"，定义了什么样的关系是合法的。一个精心设计的本体能够：</p>
 <ol>
 <li><strong>约束叙事逻辑</strong>：防止出现矛盾或不合理的情节</li>
@@ -3622,7 +3644,7 @@ constraints:
       THEN EXISTS { ?event :explains character.disappearance }
 </code></pre>
 
-<h3 id="_57">推理引擎：自动生成的情节连接</h3>
+<h3 id="_59">推理引擎：自动生成的情节连接</h3>
 <p>知识图谱的强大之处在于推理能力：</p>
 <pre class="codehilite"><code class="language-python"># 推理规则示例
 rules = [
@@ -3675,9 +3697,9 @@ SELECT ?person1 ?person2 ?relationship WHERE {
 }
 </code></pre>
 
-<h3 id="_58">语义丰富性：同一事实的多重表达</h3>
+<h3 id="_60">语义丰富性：同一事实的多重表达</h3>
 <p>知识图谱的强大之处在于它能够捕捉同一事实的多重维度和解释。这种语义丰富性不仅让叙事更加立体，还为读者提供了多种探索路径。</p>
-<h4 id="_59">多层次语义标注</h4>
+<h4 id="_61">多层次语义标注</h4>
 <pre class="codehilite"><code class="language-turtle">@prefix : &lt;http://narrative.example/&gt; .
 @prefix view: &lt;http://narrative.example/viewpoint/&gt; .
 @prefix meta: &lt;http://narrative.example/meta/&gt; .
@@ -3771,7 +3793,7 @@ SELECT ?person1 ?person2 ?relationship WHERE {
 ] .
 </code></pre>
 
-<h4 id="_60">时态与不确定性的表达</h4>
+<h4 id="_62">时态与不确定性的表达</h4>
 <pre class="codehilite"><code class="language-python">class TemporalNarrative:
     &quot;&quot;&quot;处理叙事中的时态和不确定性&quot;&quot;&quot;
 
@@ -3840,9 +3862,9 @@ event_data = {
 }
 </code></pre>
 
-<h3 id="_61">知识图谱可视化：故事的全景图</h3>
+<h3 id="_63">知识图谱可视化：故事的全景图</h3>
 <p>可视化是让知识图谱真正"活起来"的关键。通过图形化展示，读者可以直观地看到故事世界的全貌和关系网络。</p>
-<h4 id="_62">交互式叙事图谱</h4>
+<h4 id="_64">交互式叙事图谱</h4>
 <pre class="codehilite"><code class="language-javascript">// 使用Cytoscape.js构建交互式叙事网络
 class InteractiveNarrativeGraph {
   constructor(container) {
@@ -4151,7 +4173,7 @@ class TemporalNarrativeVisualization {
 }
 </code></pre>
 
-<h4 id="_63">三维叙事空间</h4>
+<h4 id="_65">三维叙事空间</h4>
 <pre class="codehilite"><code class="language-javascript">// 使用Three.js创建3D叙事空间
 class NarrativeSpace3D {
   constructor(container) {
